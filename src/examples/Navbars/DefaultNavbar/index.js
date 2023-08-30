@@ -43,6 +43,9 @@ import DefaultNavbarMobile from "examples/Navbars/DefaultNavbar/DefaultNavbarMob
 // Material Kit 2 React base styles
 import breakpoints from "assets/theme/base/breakpoints";
 
+// import context
+import { useShoppingCart } from "context/ShoppingCartContext";
+
 function DefaultNavbar({ brand, routes, transparent, light, action, sticky, relative, center }) {
   const [dropdown, setDropdown] = useState("");
   const [dropdownEl, setDropdownEl] = useState("");
@@ -55,6 +58,9 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
   const [mobileView, setMobileView] = useState(false);
 
   const openMobileNavbar = () => setMobileNavbar(!mobileNavbar);
+
+  // eslint-disable-next-line no-unused-vars
+  const { openCart, cartQuantity } = useShoppingCart();
 
   useEffect(() => {
     // A function that sets the display state for the DefaultNavbarMobile.
@@ -501,7 +507,22 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
                   }
                   color={action.color ? action.color : "info"}
                   size="small"
+                  onClick={openCart}
                 >
+                  <div
+                    className="rounded-circle bg-danger d-flex justify-content-center align-items-center"
+                    style={{
+                      color: "white",
+                      width: "1.5rem",
+                      height: "1.5rem",
+                      position: "absolute",
+                      bottom: 0,
+                      right: 0,
+                      transform: "translate(25%, 25%)",
+                    }}
+                  >
+                    {cartQuantity}
+                  </div>
                   {action.label}
                 </MKButton>
               ) : (
@@ -517,7 +538,22 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
                   }
                   color={action.color ? action.color : "info"}
                   size="small"
+                  onClick={openCart}
                 >
+                  <div
+                    className="rounded-circle bg-danger d-flex justify-content-center align-items-center"
+                    style={{
+                      color: "white",
+                      width: "1.5rem",
+                      height: "1.5rem",
+                      position: "absolute",
+                      bottom: 0,
+                      right: 0,
+                      transform: "translate(25%, 25%)",
+                    }}
+                  >
+                    {cartQuantity}
+                  </div>
                   {action.label}
                 </MKButton>
               ))}
@@ -551,7 +587,7 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
 
 // Setting default values for the props of DefaultNavbar
 DefaultNavbar.defaultProps = {
-  brand: "Material Kit 2",
+  brand: "3AM Store",
   transparent: false,
   light: false,
   action: false,
