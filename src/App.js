@@ -17,6 +17,9 @@ import ProductList from "pages/ProductPages/ProductList";
 import SignInPage from "layouts/pages/authentication/sign-in";
 import SignUpBasic from "pages/LandingPages/SignUp";
 import ProductDetail from "pages/ProductPages/ProductDetail";
+import Admin from "pages/AdminPages";
+import ProductManager from "pages/AdminPages/Pages/ProductManager";
+import Dashboard from "pages/AdminPages/Pages/Dashboard";
 
 export default function App() {
   const { pathname } = useLocation();
@@ -43,15 +46,21 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+
       <Routes>
         {getRoutes(routes)}
         <Route path="/home" element={<Home />} />
-        {/* <Route path="/admin" element={<Dashboard />} /> */}
+
         <Route path="/products" element={<ProductList />} />
         <Route path="/productdetail" element={<ProductDetail />} />
 
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpBasic />} />
+
+        <Route path="admin" element={<Admin></Admin>}>
+          <Route index element={<Dashboard />} />
+          <Route path="products" element={<ProductManager />} />
+        </Route>
 
         <Route path="*" element={<Navigate to="/home" />} />
       </Routes>
