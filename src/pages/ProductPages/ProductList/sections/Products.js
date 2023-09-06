@@ -28,11 +28,25 @@ import MKBox from "components/MKBox";
 import ExampleCard from "pages/HomePage/components/ExampleCard";
 
 // Data
-import data from "pages/ProductPages/ProductList/sections/data/ProductData";
+
+// Paginate
+import ReactPaginate from "react-paginate";
+import { NumberOfPage, ProductData } from "./data/ProductData";
+import { useContext, useState } from "react";
+import { FilterContext } from "../context/FilterContext";
 
 function Product() {
+  const { sort, fKey } = useContext(FilterContext);
+  const totalPage = NumberOfPage();
+  const [page, setPage] = useState(1);
+  const data = [
+    {
+      title: "Design Blocks",
+      items: ProductData(page, sort, fKey),
+    },
+  ];
   const renderData = data.map(({ title, items }) => (
-    <Grid container spacing={3} sx={{ mb: 10 }} key={title}>
+    <Grid container spacing={3} sx={{ mb: 3 }} key={title}>
       <Grid item xs={12} lg={12}>
         <Grid container spacing={3}>
           {items.map(({ image, name, count, route, pro }) => (
@@ -46,30 +60,37 @@ function Product() {
       </Grid>
     </Grid>
   ));
-
+  const handlePageClick = (event) => {
+    setPage(+event.selected + 1);
+    console.log("page", page);
+  };
   return (
-    <MKBox component="section" my={3} py={3}>
-      {/* <Container>
-        <Grid
-          container
-          item
-          xs={12}
-          lg={6}
-          flexDirection="column"
-          alignItems="center"
-          sx={{ textAlign: "center", my: 6, mx: "auto", px: 0.75 }}
-        >
-          <MKBadge
-            variant="contained"
-            color="info"
-            badgeContent="Infinite combinations"
-            container
-            sx={{ mb: 2 }}
-          />
-        </Grid>
-      </Container> */}
-      <Container sx={{ mt: 2 }}>{renderData}</Container>
-    </MKBox>
+    <>
+      <MKBox component="section" my={0} py={0}>
+        <Container sx={{ mt: 0 }}>{renderData}</Container>
+      </MKBox>
+
+      <div className="d-flex justify-content-center mb-5">
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel=">"
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={5}
+          pageCount={totalPage}
+          previousLabel="<"
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextClassName="page-item"
+          nextLinkClassName="page-link"
+          breakClassName="page-item"
+          breakLinkClassName="page-link"
+          containerClassName="pagination"
+          activeClassName="active"
+        />
+      </div>
+    </>
   );
 }
 

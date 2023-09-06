@@ -25,9 +25,22 @@ import bgImage from "assets/images/clock4.jpg";
 
 // CSS
 import "../css/product.css";
-import PaginationSimple from "./sections/Pagination";
+
+import { useContext, useState } from "react";
+import { FilterContext } from "./context/FilterContext";
 
 export default function ProductList() {
+  const { fKey, setFKey } = useContext(FilterContext);
+  const [search, setSearch] = useState("");
+
+  const FilterKey = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const handleSearch = () => {
+    setFKey(search);
+    console.log("setSearch", fKey);
+  };
   return (
     <>
       <DefaultNavbar
@@ -114,13 +127,14 @@ export default function ProductList() {
               type="text"
               placeholder="Search"
               aria-label="Search"
+              onChange={FilterKey}
             />
-            <i className="fas fa-search" aria-hidden="true"></i>
+            <i className="fas fa-search" aria-hidden="true" onClick={handleSearch}></i>
           </form>
           <Dropdown />
         </div>
         <Product />
-        <PaginationSimple />
+        {/* <PaginationSimple /> */}
       </Card>
 
       <MKBox pt={6} px={1} mt={6}>

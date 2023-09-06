@@ -72,7 +72,7 @@ const routes = [
   {
     name: "Home",
     icon: <Icon>dashboard</Icon>,
-    href: "https://www.github.com/creativetimofficial/material-kit-react",
+    route: "pages/HomePage",
 
     // columns: 1,
     // rowsPerColumn: 2,
@@ -112,7 +112,7 @@ const routes = [
   {
     name: "products",
     icon: <Icon>view_day</Icon>,
-    href: "https://www.github.com/creativetimofficial/material-kit-react",
+    route: "/products",
 
     // collapse: [
     //   {

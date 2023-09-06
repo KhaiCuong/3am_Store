@@ -22,6 +22,7 @@ import Tooltip from "@mui/material/Tooltip";
 // Material Kit 2 React components
 import MKBox from "components/MKBox";
 import MKTypography from "components/MKTypography";
+import CurrencyFormat from "react-currency-format";
 
 function ExampleCard({ image, name, count, pro, ...rest }) {
   const imageTemplate = (
@@ -73,6 +74,7 @@ function ExampleCard({ image, name, count, pro, ...rest }) {
         src={image}
         alt={name}
         width="100%"
+        height="250px"
         my="auto"
         opacity={pro ? 0.6 : 1}
       />
@@ -97,7 +99,13 @@ function ExampleCard({ image, name, count, pro, ...rest }) {
           )}
           {count > 0 && (
             <MKTypography variant="button" fontWeight="regular" color="secondary">
-              {count} {count === 1 ? "Example" : "Examples"}
+              <CurrencyFormat
+                value={count}
+                displayType={"text"}
+                thousandSeparator={true}
+                suffix={"đ"}
+              />
+              {/* {count === 1 ? "VND" : "VND"} */}
             </MKTypography>
           )}
         </MKBox>

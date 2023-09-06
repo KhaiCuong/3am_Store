@@ -29,9 +29,36 @@ import MKTypography from "components/MKTypography";
 import ExampleCard from "pages/HomePage/components/ExampleCard";
 
 // Data
-import data from "pages/HomePage/sections/data/designBlocksData";
+import { dataCasio, dataOmega, dataOrient, dataRolex } from "./data/dataProduct";
 
 function DesignBlocks() {
+  const data = [
+    {
+      title: "Casio",
+      description:
+        "Casio tại Việt Nam gắn với hình ảnh những chiếc đồng hồ điện tử bền bỉ, chính xác, thách thức mọi điều kiện khắc nghiệt của môi trường.",
+      items: dataCasio(),
+    },
+    {
+      title: "Rolex",
+      description:
+        " Đồng hồ Rolex có kiểu dáng tinh tế, sang trọng và được chế tác tỉ mỉ, mang lại sự đẳng cấp cho người dùng.",
+      items: dataRolex(),
+    },
+    {
+      title: "Orient",
+      description:
+        "Orient có xu hướng thiết kế đơn giản. Khác với các hãng đồng hồ Nhật khác, Orient trọng tâm phát triển dòng máy cơ Automatic bình dân. ",
+      items: dataOrient(),
+    },
+    {
+      title: "Omega",
+      description:
+        "Omega đã có 170 năm đi cùng với thăng trầm của lịch sử ngành công nghiệp chế tác đồng hồ. Hãng đánh dấu thương hiệu của mình với mẫu đồng hồ du hành vũ trụ lừng danh. ",
+      items: dataOmega(),
+    },
+  ];
+
   const renderData = data.map(({ title, description, items }) => (
     <Grid container spacing={3} sx={{ mb: 10 }} key={title}>
       <Grid item xs={12} lg={3}>
@@ -73,16 +100,17 @@ function DesignBlocks() {
           <MKBadge
             variant="contained"
             color="info"
-            badgeContent="Infinite combinations"
+            badgeContent="3AM Store"
             container
             sx={{ mb: 2 }}
           />
           <MKTypography variant="h2" fontWeight="bold">
-            Huge collection of sections
+            Top thương hiệu được yêu thích
           </MKTypography>
-          <MKTypography variant="body1" color="text">
-            We have created multiple options for you to put together and customise into pixel
-            perfect pages.
+          <MKTypography variant="body1" color="text" fontSize="14px">
+            3AM Store là một đại lý phân phối sản phẩm chính hãng của các thương hiệu hàng đầu như
+            Rolex, Omega, Casio, Orient, ... Quý khách có thể an tâm mua sắm tại website của chúng
+            tôi.
           </MKTypography>
         </Grid>
       </Container>

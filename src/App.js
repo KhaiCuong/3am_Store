@@ -48,14 +48,14 @@ export default function App() {
       <CssBaseline />
 
       <Routes>
-        {getRoutes(routes)}
-        <Route path="/home" element={<Home />} />
+        <Route path="home" element={<Home />} />
 
-        <Route path="/products" element={<ProductList />} />
-        <Route path="/productdetail" element={<ProductDetail />} />
+        <Route path="products" element={<ProductList />} />
 
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpBasic />} />
+        {getRoutes(routes)}
+        <Route path="/productdetail" element={<ProductDetail />} />
 
         <Route path="admin" element={<Admin></Admin>}>
           <Route index element={<Dashboard />} />

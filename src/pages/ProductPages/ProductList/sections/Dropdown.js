@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 // @mui material components
 import Container from "@mui/material/Container";
@@ -10,11 +10,22 @@ import MenuItem from "@mui/material/MenuItem";
 // Material Kit 2 React components
 import MKBox from "components/MKBox";
 import MKButton from "components/MKButton";
+import { FilterContext } from "../context/FilterContext";
 
 function Dropdown() {
+  const { setSort } = useContext(FilterContext);
   const [dropdown, setDropdown] = useState(null);
   const openDropdown = ({ currentTarget }) => setDropdown(currentTarget);
   const closeDropdown = () => setDropdown(null);
+
+  const setDesc = () => {
+    setSort("desc");
+    setDropdown(null);
+  };
+  const setAsc = () => {
+    setSort("asc");
+    setDropdown(null);
+  };
 
   // Styles
   const iconStyles = {
@@ -37,9 +48,12 @@ function Dropdown() {
               <Icon>sort</Icon> <Icon sx={dropdownIconStyles}>expand_more</Icon>
             </MKButton>
             <Menu anchorEl={dropdown} open={Boolean(dropdown)} onClose={closeDropdown}>
-              <MenuItem onClick={closeDropdown}>Action</MenuItem>
-              <MenuItem onClick={closeDropdown}>Another action</MenuItem>
-              <MenuItem onClick={closeDropdown}>Something else here</MenuItem>
+              <MenuItem onClick={setAsc}>
+                Low To High <Icon>arrow_upward</Icon>
+              </MenuItem>
+              <MenuItem onClick={setDesc}>
+                High To Low <Icon>arrow_downward</Icon>
+              </MenuItem>
             </Menu>
           </Grid>
         </Grid>
