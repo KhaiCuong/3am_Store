@@ -22,9 +22,21 @@ function ProductData(page, sort, fKey) {
 
           // Sort
           if (sort == "desc") {
-            listdata = response.data.sort((a, b) => (a.price > b.price ? -1 : 1));
+            if (fKey != "" && fKey != null) {
+              listdata = response.data
+                .filter((i) => i.produc_name.toLowerCase().includes(fKey.toLowerCase()))
+                .sort((a, b) => (a.price > b.price ? -1 : 1));
+            } else {
+              listdata = response.data.sort((a, b) => (a.price > b.price ? -1 : 1));
+            }
           } else if (sort == "asc") {
-            listdata = response.data.sort((a, b) => (a.price < b.price ? -1 : 1));
+            if (fKey != "" && fKey != null) {
+              listdata = response.data
+                .filter((i) => i.produc_name.toLowerCase().includes(fKey.toLowerCase()))
+                .sort((a, b) => (a.price < b.price ? -1 : 1));
+            } else {
+              listdata = response.data.sort((a, b) => (a.price < b.price ? -1 : 1));
+            }
           } else {
             if (fKey != "" && fKey != null) {
               listdata = await response.data.filter((i) =>
