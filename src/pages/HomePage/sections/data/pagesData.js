@@ -13,17 +13,14 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-const imagesPrefix =
-  "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/material-design-system/presentation/pages";
-
 export default [
   {
-    image: `${imagesPrefix}/about-us.jpg`,
+    image: "https://i.ibb.co/3dJKfwz/page1.png",
     name: "About Us Page",
     route: "/pages/landing-pages/about-us",
   },
   {
-    image: `${imagesPrefix}/contact.jpg`,
+    image: "https://i.ibb.co/7zdKRbW/page3.png",
     name: "Contact Us Page",
     route: "/pages/landing-pages/contact-us",
   },
@@ -34,8 +31,8 @@ export default [
     route: "/pages/authentication/sign-in",
   },
   {
-    image: `${imagesPrefix}/author.jpg`,
-    name: "Author Page",
+    image: "https://i.ibb.co/R0y1DvH/page2.png",
+    name: "Product Page",
     route: "/pages/landing-pages/author",
   },
 ];

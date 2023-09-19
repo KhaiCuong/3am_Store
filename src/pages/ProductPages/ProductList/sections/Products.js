@@ -36,13 +36,14 @@ import { useContext, useState } from "react";
 import { FilterContext } from "../context/FilterContext";
 
 function Product() {
-  const { sort, fKey } = useContext(FilterContext);
-  const totalPage = NumberOfPage();
-  const [page, setPage] = useState(1);
+  const { sort, fKey } = useContext(FilterContext); // get information from context
+  const totalPage = NumberOfPage(); // total page
+  const [page, setPage] = useState(1); // current page
+  // *** list product
   const data = [
     {
       title: "Design Blocks",
-      items: ProductData(page, sort, fKey),
+      items: ProductData(page, sort, fKey), // get list product
     },
   ];
   const renderData = data.map(({ title, items }) => (

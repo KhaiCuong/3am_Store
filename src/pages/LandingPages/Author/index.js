@@ -24,7 +24,7 @@ import DefaultNavbar from "examples/Navbars/DefaultNavbar";
 
 // Author page sections
 import Profile from "pages/LandingPages/Author/sections/Profile";
-import Posts from "pages/LandingPages/Author/sections/Posts";
+// import Posts from "pages/LandingPages/Author/sections/Posts";
 import Contact from "pages/LandingPages/Author/sections/Contact";
 import Footer from "pages/LandingPages/Author/sections/Footer";
 
@@ -33,6 +33,7 @@ import routes from "routes";
 
 // Images
 import bgImage from "assets/images/city-profile.jpg";
+import { Icon } from "@mui/material";
 
 function Author() {
   return (
@@ -76,7 +77,7 @@ function Author() {
           }}
         >
           <Profile />
-          <Posts />
+          {/* <Posts /> */}
         </Card>
         <Contact />
         <Footer />

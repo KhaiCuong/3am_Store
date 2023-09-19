@@ -87,7 +87,7 @@ function Home() {
                 },
               })}
             >
-              Material Kit 2 React{" "}
+              3AM STORE
             </MKTypography>
             <MKTypography
               variant="body1"
@@ -96,9 +96,22 @@ function Home() {
               px={{ xs: 6, lg: 12 }}
               mt={1}
             >
-              Free & Open Source Web UI Kit built over ReactJS &amp; MUI. Join over 1.6 million
-              developers around the world.
+              A selection of watch holders, winders and watch cases for the discerning collector
             </MKTypography>
+            <MKBox display="flex" justifyContent="center" alignItems="center" mt={5}>
+              <MKTypography component="a" variant="body1" color="white" href="#" mr={3}>
+                <i className="fab fa-facebook" />
+              </MKTypography>
+              <MKTypography component="a" variant="body1" color="white" href="#" mr={3}>
+                <i className="fab fa-instagram" />
+              </MKTypography>
+              <MKTypography component="a" variant="body1" color="white" href="#" mr={3}>
+                <i className="fab fa-twitter" />
+              </MKTypography>
+              <MKTypography component="a" variant="body1" color="white" href="#">
+                <i className="fab fa-google-plus" />
+              </MKTypography>
+            </MKBox>
           </Grid>
         </Container>
       </MKBox>

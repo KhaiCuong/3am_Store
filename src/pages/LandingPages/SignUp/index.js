@@ -14,7 +14,7 @@ Coded by www.creative-tim.com
 */
 
 // react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -43,8 +43,136 @@ import routes from "routes";
 
 // Images
 import bgImage from "assets/images/bg3.jpg";
+import { useEffect, useState } from "react";
+import { GetUsers, PostRegister } from "../Service/ApiService";
+import Swal from "sweetalert2";
 
 function SignUpBasic() {
+  const navigate = useNavigate();
+  const [emailUser, setEmailUser] = useState([]);
+  // initial value of data Register
+  const initialState = {
+    fullname: "",
+    phone_number: "",
+    address: "",
+    password: "",
+    email: "",
+    role: "User",
+  };
+  // use to contain data Register
+  const [dataInput, setDataInput] = useState(initialState);
+  // use to contain errors
+  const [errors, setErrors] = useState({});
+
+  // handle when user type information
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setDataInput({
+      ...dataInput,
+      [name]: value,
+    });
+    setErrors({
+      ...errors,
+      [name]: "",
+    });
+  };
+
+  // Call API
+  const fetchRegister = async () => {
+    try {
+      const response = await PostRegister(dataInput);
+      if (response.status === 200) {
+        Swal.fire({
+          title: "Registered successfully!",
+          text: "Your account has been successfully registered.",
+          icon: "success",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/signin");
+          }
+        });
+      }
+    } catch (error) {
+      console.log("err", error);
+    }
+    fetchRegister;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    //Validate form before call API to create
+    const newErrors = validateForm(dataInput);
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      const listerror = Object.values(newErrors).join("\n");
+      Swal.fire({
+        icon: "error",
+        title: listerror,
+      });
+      return;
+    } else {
+      fetchRegister();
+    }
+  };
+  // hidden error when typing
+  const handleInputFocus = (name) => {
+    setErrors({
+      ...errors,
+      [name]: "",
+    });
+  };
+
+  // Validate data
+  const validateForm = (dataInput) => {
+    let errors = {};
+
+    if (!dataInput.fullname) {
+      errors.fullname = "User Name is required";
+    } else if (dataInput.fullname.length < 3 || dataInput.fullname.length > 30) {
+      errors.fullname = "User Name must be between 3 - 30 characters";
+    }
+
+    if (!dataInput.phone_number) {
+      errors.phone_number = "Phone Number is required";
+    }
+    if (!dataInput.email) {
+      errors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(dataInput.email)) {
+      errors.email = "Invalid email format";
+    } else if (Object.values(emailUser).includes(dataInput.email)) {
+      errors.email = "Email already used!";
+    }
+
+    if (!dataInput.password) {
+      errors.password = "Password is required";
+    } else if (dataInput.password.length < 6 || dataInput.password.length > 20) {
+      errors.password = "Password must be between 6 - 20 characters";
+    }
+
+    return errors;
+  };
+
+  // Get user list
+  useEffect(() => {
+    const fetchDataList = async () => {
+      try {
+        const listUser = await GetUsers();
+        if (listUser.status === 200) {
+          let arr = [];
+          for (let i = 0; i < listUser.data.length; i++) {
+            arr[i] = listUser.data[i].email;
+          }
+          setEmailUser(arr);
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+    fetchDataList();
+  }, []);
+
   return (
     <>
       <DefaultNavbar
@@ -115,28 +243,68 @@ function SignUpBasic() {
               <MKBox pt={4} pb={3} px={3}>
                 <MKBox component="form" role="form">
                   <MKBox mb={2}>
-                    <MKInput type="text" label="Name" fullWidth />
+                    <MKInput
+                      type="text"
+                      label="Name"
+                      name="fullname"
+                      onChange={handleInputChange}
+                      onFocus={() => handleInputFocus("fullname")}
+                      error={errors.fullname}
+                      fullWidth
+                    />
                   </MKBox>
                   <MKBox mb={2}>
-                    <MKInput type="email" label="Email" fullWidth />
+                    <MKInput
+                      type="email"
+                      label="Email"
+                      name="email"
+                      onChange={handleInputChange}
+                      onFocus={() => handleInputFocus("email")}
+                      error={errors.email}
+                      fullWidth
+                    />
                   </MKBox>
                   <MKBox mb={2}>
-                    <MKInput type="password" label="Password" fullWidth />
+                    <MKInput
+                      type="password"
+                      label="Password"
+                      name="password"
+                      onChange={handleInputChange}
+                      onFocus={() => handleInputFocus("password")}
+                      error={errors.password}
+                      fullWidth
+                    />
                   </MKBox>
                   <MKBox mb={2}>
-                    <MKInput type="text" label="Address" fullWidth />
+                    <MKInput
+                      type="text"
+                      label="Address"
+                      name="address"
+                      onChange={handleInputChange}
+                      onFocus={() => handleInputFocus("address")}
+                      error={errors.address}
+                      fullWidth
+                    />
                   </MKBox>
                   <MKBox mb={2}>
-                    <MKInput type="text" label="Phone number" fullWidth />
+                    <MKInput
+                      type="text"
+                      label="Phone number"
+                      name="phone_number"
+                      onChange={handleInputChange}
+                      onFocus={() => handleInputFocus("phone_number")}
+                      error={errors.phone_number}
+                      fullWidth
+                    />
                   </MKBox>
                   <MKBox mt={4} mb={1}>
-                    <MKButton variant="gradient" color="info" fullWidth>
+                    <MKButton variant="gradient" color="info" onClick={handleSubmit} fullWidth>
                       sign up
                     </MKButton>
                   </MKBox>
                   <MKBox mt={3} mb={1} textAlign="center">
                     <MKTypography variant="button" color="text">
-                      Already have an account{" "}
+                      Already have an account
                       <MKTypography
                         component={Link}
                         to="/signin"

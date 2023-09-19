@@ -58,7 +58,7 @@ function Team() {
             <MKBox mb={1}>
               <HorizontalTeamCard
                 image={team1}
-                name="Emma Roberts"
+                name="Duong Khai Cuong"
                 position={{ color: "info", label: "UI Designer" }}
                 description="Artist is a term applied to a person who engages in an activity deemed to be an art."
               />
@@ -68,7 +68,7 @@ function Team() {
             <MKBox mb={1}>
               <HorizontalTeamCard
                 image={team2}
-                name="William Pearce"
+                name="Duong Khai Cuong"
                 position={{ color: "info", label: "Boss" }}
                 description="Artist is a term applied to a person who engages in an activity deemed to be an art."
               />
@@ -78,7 +78,7 @@ function Team() {
             <MKBox mb={{ xs: 1, lg: 0 }}>
               <HorizontalTeamCard
                 image={team3}
-                name="Ivana Flow"
+                name="Duong Khai Cuong"
                 position={{ color: "info", label: "Athlete" }}
                 description="Artist is a term applied to a person who engages in an activity deemed to be an art."
               />
@@ -88,7 +88,7 @@ function Team() {
             <MKBox mb={{ xs: 1, lg: 0 }}>
               <HorizontalTeamCard
                 image={team4}
-                name="Marquez Garcia"
+                name="Duong Khai Cuong"
                 position={{ color: "info", label: "JS Developer" }}
                 description="Artist is a term applied to a person who engages in an activity deemed to be an art."
               />

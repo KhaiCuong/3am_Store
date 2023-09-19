@@ -21,7 +21,6 @@ import Card from "@mui/material/Card";
 // Material Kit 2 React components
 import MKBox from "components/MKBox";
 import MKTypography from "components/MKTypography";
-import MKButton from "components/MKButton";
 
 // Material Kit 2 React examples
 import DefaultNavbar from "examples/Navbars/DefaultNavbar";
@@ -30,7 +29,6 @@ import DefaultFooter from "examples/Footers/DefaultFooter";
 // About Us page sections
 import Information from "pages/LandingPages/AboutUs/sections/Information";
 import Team from "pages/LandingPages/AboutUs/sections/Team";
-import Featuring from "pages/LandingPages/AboutUs/sections/Featuring";
 import Newsletter from "pages/LandingPages/AboutUs/sections/Newsletter";
 
 // Routes
@@ -38,7 +36,8 @@ import routes from "routes";
 import footerRoutes from "footer.routes";
 
 // Images
-import bgImage from "assets/images/bg-about-us.jpg";
+import bgImage from "assets/images/clock3.jpg";
+import { Icon } from "@mui/material";
 
 function AboutUs() {
   return (
@@ -89,15 +88,13 @@ function AboutUs() {
                 },
               })}
             >
-              Work with an amazing design
+              3AM STORE
             </MKTypography>
             <MKTypography variant="body1" color="white" opacity={0.8} mt={1} mb={3}>
-              We&apos;re constantly trying to express ourselves and actualize our dreams. If you
-              have the opportunity to play this game
+              The Limited Edition presents an assortment of finely crafted watch accessories, from
+              leading UK manufacturer Wolf. A selection of watch holders, winders and watch cases
+              for the discerning collector
             </MKTypography>
-            <MKButton color="default" sx={{ color: ({ palette: { dark } }) => dark.main }}>
-              create account
-            </MKButton>
             <MKTypography variant="h6" color="white" mt={8} mb={1}>
               Find us on
             </MKTypography>
@@ -129,7 +126,6 @@ function AboutUs() {
       >
         <Information />
         <Team />
-        <Featuring />
         <Newsletter />
       </Card>
       <MKBox pt={6} px={1} mt={6}>

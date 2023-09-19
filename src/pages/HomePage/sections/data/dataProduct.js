@@ -26,7 +26,7 @@ function dataRolex() {
     image: `http://localhost:5051${item.image}`,
     name: `${item.produc_name}`,
     count: `${item.price}`,
-    route: "/sections/page-sections/page-headers",
+    route: `http://localhost:3000/products/ProductDetail/${item.product_id}`,
   }));
 
   return listProduct;
@@ -54,7 +54,7 @@ function dataCasio() {
     image: `http://localhost:5051${item.image}`,
     name: `${item.produc_name}`,
     count: `${item.price}`,
-    route: "/sections/page-sections/page-headers",
+    route: `http://localhost:3000/products/ProductDetail/${item.product_id}`,
   }));
 
   return listProduct;
@@ -82,7 +82,7 @@ function dataOrient() {
     image: `http://localhost:5051${item.image}`,
     name: `${item.produc_name}`,
     count: `${item.price}`,
-    route: "/sections/page-sections/page-headers",
+    route: `http://localhost:3000/products/ProductDetail/${item.product_id}`,
   }));
 
   return listProduct;
@@ -110,7 +110,7 @@ function dataOmega() {
     image: `http://localhost:5051${item.image}`,
     name: `${item.produc_name}`,
     count: `${item.price}`,
-    route: "/sections/page-sections/page-headers",
+    route: `http://localhost:3000/products/ProductDetail/${item.product_id}`,
   }));
 
   return listProduct;

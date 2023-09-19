@@ -14,7 +14,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect, useContext } from "react";
 
 // react-router components
 import { Link } from "react-router-dom";
@@ -45,8 +45,9 @@ import breakpoints from "assets/theme/base/breakpoints";
 
 // import context
 import { useShoppingCart } from "context/ShoppingCartContext";
+import { FilterContext } from "pages/ProductPages/ProductList/context/FilterContext";
 
-function DefaultNavbar({ brand, routes, transparent, light, action, sticky, relative, center }) {
+function DefaultNavbar({ brand, transparent, light, action, sticky, relative, center }) {
   const [dropdown, setDropdown] = useState("");
   const [dropdownEl, setDropdownEl] = useState("");
   const [dropdownName, setDropdownName] = useState("");
@@ -56,8 +57,126 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
   const [arrowRef, setArrowRef] = useState(null);
   const [mobileNavbar, setMobileNavbar] = useState(false);
   const [mobileView, setMobileView] = useState(false);
-
+  const [data, setData] = useState(false);
   const openMobileNavbar = () => setMobileNavbar(!mobileNavbar);
+
+  // usecontext
+  const { navbar, setNavbar } = useContext(FilterContext); // get information from context
+
+  // get usertoken
+  const usertoken = JSON.parse(localStorage.getItem("userToken"));
+
+  // used to save username
+  const account =
+    usertoken != null
+      ? usertoken.fullname.length > 6
+        ? `${usertoken.fullname.substring(0, 6)}...`
+        : usertoken.fullname
+      : "";
+
+  // handle when user logout
+  function handleLogout() {
+    if (usertoken != null) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("userToken");
+      setNavbar(!navbar);
+    }
+  }
+
+  // initial value of navbar list
+  const list =
+    usertoken == null
+      ? [
+          // not logged in yet
+          {
+            name: "Home",
+            icon: <Icon>dashboard</Icon>,
+            route: "pages/HomePage",
+          },
+          {
+            name: "products",
+            icon: <Icon>view_day</Icon>,
+            route: "/products",
+          },
+          {
+            name: "Website",
+            icon: <Icon>article</Icon>,
+
+            collapse: [
+              {
+                name: "About us",
+                route: "/about-us",
+              },
+              {
+                name: "Contact",
+                route: "/contact",
+              },
+            ],
+          },
+          {
+            name: "Account",
+            icon: <Icon>person</Icon>,
+            collapse: [
+              {
+                name: "Sign up",
+                route: "/signup",
+              },
+              {
+                name: "Sign in",
+                route: "/signin",
+              },
+            ],
+          },
+        ]
+      : [
+          // already logged in
+          {
+            name: "Home",
+            icon: <Icon>dashboard</Icon>,
+            route: "pages/HomePage",
+          },
+          {
+            name: "products",
+            icon: <Icon>view_day</Icon>,
+            route: "/products",
+          },
+          {
+            name: "Website",
+            icon: <Icon>article</Icon>,
+
+            collapse: [
+              {
+                name: "About us",
+                route: "/about-us",
+              },
+              {
+                name: "Contact",
+                route: "/contact",
+              },
+            ],
+          },
+          {
+            name: `${account}`,
+            icon: <Icon>person</Icon>,
+            collapse: [
+              {
+                name: "My profile",
+                route: "/user-infor",
+              },
+              {
+                name: (
+                  <p className="mb-0" onClick={handleLogout}>
+                    Sign out
+                  </p>
+                ),
+                route: "/homes",
+              },
+            ],
+          },
+        ];
+
+  // used to save navbar list
+  const [routes, setroutes] = useState(list);
 
   // eslint-disable-next-line no-unused-vars
   const { openCart, cartQuantity } = useShoppingCart();
@@ -87,25 +206,126 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
     return () => window.removeEventListener("resize", displayMobileNavbar);
   }, []);
 
-  const renderNavbarItems = routes.map(({ name, icon, href, route, collapse }) => (
-    <DefaultNavbarDropdown
-      key={name}
-      name={name}
-      icon={icon}
-      href={href}
-      route={route}
-      collapse={Boolean(collapse)}
-      onMouseEnter={({ currentTarget }) => {
-        if (collapse) {
-          setDropdown(currentTarget);
-          setDropdownEl(currentTarget);
-          setDropdownName(name);
-        }
-      }}
-      onMouseLeave={() => collapse && setDropdown(null)}
-      light={light}
-    />
-  ));
+  //  Used to re-render data when user signing-in/sign-out
+  useEffect(() => {
+    let renderNavbarItems;
+    let routesList =
+      usertoken == null
+        ? [
+            // not logged in yet
+            {
+              name: "Home",
+              icon: <Icon>dashboard</Icon>,
+              route: "pages/HomePage",
+            },
+            {
+              name: "products",
+              icon: <Icon>view_day</Icon>,
+              route: "/products",
+            },
+            {
+              name: "Website",
+              icon: <Icon>article</Icon>,
+
+              collapse: [
+                {
+                  name: "About us",
+                  route: "/about-us",
+                },
+                {
+                  name: "Contact",
+                  route: "/contact",
+                },
+              ],
+            },
+            {
+              name: "Account",
+              icon: <Icon>person</Icon>,
+              collapse: [
+                {
+                  name: "Sign up",
+                  route: "/signup",
+                },
+                {
+                  name: "Sign in",
+                  route: "/signin",
+                },
+              ],
+            },
+          ]
+        : [
+            // already logged in
+            {
+              name: "Home",
+              icon: <Icon>dashboard</Icon>,
+              route: "pages/HomePage",
+            },
+            {
+              name: "products",
+              icon: <Icon>view_day</Icon>,
+              route: "/products",
+            },
+            {
+              name: "Website",
+              icon: <Icon>article</Icon>,
+
+              collapse: [
+                {
+                  name: "About us",
+                  route: "/about-us",
+                },
+                {
+                  name: "Contact",
+                  route: "/contact",
+                },
+              ],
+            },
+            {
+              name: `${account}`,
+              icon: <Icon>person</Icon>,
+              collapse: [
+                {
+                  name: "My profile",
+                  route: "/user-infor",
+                },
+                {
+                  name: (
+                    <p className="mb-0" onClick={handleLogout}>
+                      Sign out
+                    </p>
+                  ),
+                  route: "/homes",
+                },
+              ],
+            },
+          ];
+    // reset navbar list
+    setroutes(routesList);
+    // usertoken != null ? setoutesnav(routes2) : setoutesnav(routes);
+    renderNavbarItems = routes.map(({ name, icon, href, route, collapse }) => (
+      <DefaultNavbarDropdown
+        key={name}
+        name={name}
+        icon={icon}
+        href={href}
+        route={route}
+        collapse={Boolean(collapse)}
+        onMouseEnter={({ currentTarget }) => {
+          if (collapse) {
+            setDropdown(currentTarget);
+            setDropdownEl(currentTarget);
+            setDropdownName(name);
+          }
+        }}
+        onMouseLeave={() => {
+          collapse && setDropdown(null);
+        }}
+        light={light}
+      />
+    ));
+    // reset navbar data
+    setData(renderNavbarItems);
+  }, [navbar]);
 
   // Render the routes on the dropdown menu
   const renderRoutes = routes.map(({ name, collapse, columns, rowsPerColumn }) => {
@@ -168,7 +388,7 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
                           transition: "all 300ms linear",
 
                           "&:hover": {
-                            backgroundColor: grey[200],
+                            backgroundColor: grey[500],
                             color: dark.main,
                           },
                         })}
@@ -250,6 +470,7 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
             onMouseLeave={() => {
               if (item.dropdown) {
                 setNestedDropdown(null);
+                // setNavbar(!navbar);
               }
             }}
           >
@@ -308,6 +529,7 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
         if (!nestedDropdown) {
           setDropdown(null);
           setDropdownName("");
+          // setNavbar(!navbar);
         }
       }}
     >
@@ -492,7 +714,7 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
             ml="auto"
             mr={center ? "auto" : 0}
           >
-            {renderNavbarItems}
+            {data}
           </MKBox>
           <MKBox ml={{ xs: "auto", lg: 0 }}>
             {action &&

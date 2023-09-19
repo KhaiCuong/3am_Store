@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import ReactModal from "react-modal";
 import { useShoppingCart } from "context/ShoppingCartContext";
 import { CartItem } from "./CartItem";
+import { GetUserByID, PostOrder, PostOrderDetail, PutProductQuantity } from "./service/ApiService";
 
 // eslint-disable-next-line react/prop-types
 const ShoppingCartModal = ({ isOpen }) => {
@@ -14,9 +15,16 @@ const ShoppingCartModal = ({ isOpen }) => {
   const { cartItems, closeCart } = useShoppingCart();
   // get userToken in localStorage to check user is logged in or not
   const usertoken = JSON.parse(localStorage.getItem("userToken"));
-
   // eslint-disable-next-line no-unused-vars
   const [user, setUser] = useState([]);
+
+  const initialState = {
+    phone_number: usertoken ? usertoken.phone_number : "",
+    address: usertoken ? usertoken.address : "",
+    username: usertoken ? usertoken.fullname : "",
+    user_id: usertoken ? usertoken.user_id : "",
+  };
+  let [dataOrder, setDataOrder] = useState(initialState);
 
   // calculate total amount to be paid
   let total = 0;
@@ -26,39 +34,72 @@ const ShoppingCartModal = ({ isOpen }) => {
 
   // handle when the user clicks the "Login" button
   const handleLogin = () => {
-    navigate("/login");
+    closeCart();
+    navigate("/signin");
   };
 
   // handle when the user clicks the "Buy now" button
   const handleSubmit = (e) => {
     e.preventDefault();
-    // call API to post the list of products that the user has added to the cart
-    // for (let i = 0; i < cartItems.length; i++) {
-    //   axios
-    //     .post("http://localhost:5158/api/Booking/AddBooking", {
-    //       user_id: user.user_id,
-    //       accommodation_id: cartItems[i].id,
-    //       quantity: cartItems[i].quantity,
-    //       // created_at: cartItems[i].times.timeIn,
-    //       // update_at: cartItems[i].times.timeOut,
-    //     })
-    //     .then()
-    //     .catch((err) => console.log(err));
-    // }
+    const AddOrder = async () => {
+      try {
+        const response = await PostOrder(dataOrder);
+        if (response.status === 200) {
+          for (let i = 0; i < cartItems.length; i++) {
+            const dataDetail = {
+              produc_name: cartItems[i].product_name,
+              quantity: cartItems[i].quantity,
+              price: cartItems[i].price,
+              image: cartItems[i].image,
+              product_id: cartItems[i].id,
+              order_id: response.data.order_id,
+            };
+            const detail = await PostOrderDetail(dataDetail);
+            if (detail.status === 200) {
+              PutProductQuantity(cartItems[i].product_id, cartItems[i].quantity);
+            }
+          }
+
+          localStorage.removeItem("shopping-cart");
+          closeCart();
+          window.location.reload();
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+
+    AddOrder();
+  };
+
+  // handle when user change information
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setDataOrder({
+      ...dataOrder,
+      [name]: value,
+    });
   };
 
   useEffect(() => {
     // call API to get User profile
-    // if (usertoken != null) {
-    //   axios
-    //     .get(`http://localhost:5158/api/User/GetUser/${usertoken.user_id}`)
-    //     .then(() => {
-    //       setUser(res.data.data);
-    //       SetOutEmail(res.data.data.email);
-    //     })
-    //     .then((error) => console.log(error));
-    // }
+    const fetchUserDataByID = async () => {
+      try {
+        if (usertoken != null) {
+          const response = await GetUserByID(usertoken.user_id);
+          if (response.status === 200) {
+            setUser(response.data);
+          }
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+
+    fetchUserDataByID();
   }, []);
+
+  // console.log("total", cartItems);
 
   return (
     <ReactModal
@@ -73,7 +114,7 @@ const ShoppingCartModal = ({ isOpen }) => {
 
       <MDBRow>
         {/* Show product in Cart */}
-        <MDBCol lg="7" className="px-4 py-4">
+        <MDBCol lg="7" sm="12" md="12" className="px-4 py-4">
           <MDBTypography tag="h3" className="mb-5 pt-2 text-center fw-bold text-uppercase">
             Your Products
           </MDBTypography>
@@ -106,7 +147,7 @@ const ShoppingCartModal = ({ isOpen }) => {
         </MDBCol>
 
         {/* Show user information */}
-        <MDBCol lg="5" className="px-5 py-4">
+        <MDBCol lg="5" sm="12" md="12" className="px-5 py-4">
           <MDBTypography tag="h3" className="mb-5 pt-2 text-center fw-bold text-uppercase">
             User Information
           </MDBTypography>
@@ -116,20 +157,38 @@ const ShoppingCartModal = ({ isOpen }) => {
             <form className="mb-5" onSubmit={handleSubmit}>
               <MDBTypography tag="h5">Name</MDBTypography>
               <div className="mb-3">
-                <MDBInput type="text" size="lg" name="user_name" value={user.user_name} />
+                <MDBInput
+                  type="text"
+                  size="lg"
+                  name="username"
+                  value={dataOrder.username}
+                  onChange={handleInputChange}
+                />
               </div>
               <MDBTypography tag="h5">Phone Number</MDBTypography>
               <div className="mb-3">
-                <MDBInput type="text" size="lg" name="phone_number" value={user.phone_number} />
+                <MDBInput
+                  type="text"
+                  size="lg"
+                  name="phone_number"
+                  value={dataOrder.phone_number}
+                  onChange={handleInputChange}
+                />
               </div>
-              <MDBTypography tag="h5">Email</MDBTypography>
+              <MDBTypography tag="h5">Address</MDBTypography>
               <div className="mb-3">
-                <MDBInput type="text" size="lg" name="email" />
+                <MDBInput
+                  type="text"
+                  size="lg"
+                  name="address"
+                  value={dataOrder.address}
+                  onChange={handleInputChange}
+                />
               </div>
               <div hidden>
                 <input type="number" name="totalPrice" value={total} />
               </div>
-              <p className="mb-5">
+              <p className="mb-3">
                 Lorem ipsum dolor sit amet consectetur, adipisicing elit
                 <a href="#!"> obcaecati sapiente</a>.
               </p>
@@ -161,9 +220,7 @@ const ShoppingCartModal = ({ isOpen }) => {
                 className="ripple ripple-surface btn btn-primary btn-lg btn-block"
                 onClick={handleLogin}
               >
-                <a href="/login" className="text-white">
-                  Login
-                </a>
+                Login
               </button>
               <MDBTypography
                 tag="h5"

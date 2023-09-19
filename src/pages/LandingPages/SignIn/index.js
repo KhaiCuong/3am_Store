@@ -13,10 +13,10 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 // react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -45,11 +45,118 @@ import routes from "routes";
 
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import { PostLogin } from "../Service/ApiService";
+import { FilterContext } from "pages/ProductPages/ProductList/context/FilterContext";
+import Swal from "sweetalert2";
 
 function SignInBasic() {
   const [rememberMe, setRememberMe] = useState(false);
-
+  // use to contain errors
+  const [errors, setErrors] = useState({});
+  // initial value of data Login
+  const initialState = {
+    email: "",
+    password: "",
+  };
+  // use to contain data Login
+  const [dataLogin, setDataLogin] = useState(initialState);
+  // change status of button "remember me"
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
+  // useContext to transmit login status for re-render navbar
+  const { setNavbar, navbar } = useContext(FilterContext);
+  const navigate = useNavigate();
+  const usertoken = JSON.parse(localStorage.getItem("userToken"));
+  const previousPageUrl = localStorage.getItem("previousPage");
+
+  if (usertoken) {
+    goBack();
+  }
+
+  // Call API
+  const fetchLogin = async () => {
+    try {
+      const response = await PostLogin(dataLogin);
+      if (response.status === 200) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userToken", JSON.stringify(response.data.userToken));
+        setNavbar(!navbar);
+        // navigate
+        if (response.data.userToken.role === "Admin") {
+          navigate("/admin");
+        } else {
+          if (previousPageUrl) {
+            navigate(`/products/ProductDetail/${previousPageUrl}`);
+            localStorage.removeItem("previousPage");
+          } else {
+            goBack();
+          }
+        }
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Login faild",
+        text: "Please check your email and password.",
+        icon: "error",
+      });
+    }
+  };
+
+  // handle login
+  function handleLogin(e) {
+    e.preventDefault();
+    const newErrors = validateForm(dataLogin);
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    } else {
+      fetchLogin();
+    }
+  }
+
+  // handle when user type information
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    console.log(name, value);
+    setDataLogin({
+      ...dataLogin,
+      [name]: value,
+    });
+    setErrors({
+      ...errors,
+      [name]: "",
+    });
+  };
+
+  // Validate data login
+  const validateForm = (dataLogin) => {
+    let errors = {};
+
+    if (!dataLogin.email) {
+      errors.email = "email is required";
+    } else if (!/\S+@\S+\.\S+/.test(dataLogin.email)) {
+      errors.email = "Invalid email format";
+    }
+    if (!dataLogin.password) {
+      errors.password = "password is required";
+    } else if (dataLogin.password.length < 6 || dataLogin.password.length > 20) {
+      errors.password = "Password must be between 6 - 20 characters";
+    }
+
+    return errors;
+  };
+
+  // hidden error when typing
+  const handleInputFocus = (name) => {
+    setErrors({
+      ...errors,
+      [name]: "",
+    });
+  };
+
+  // return to previous page
+  function goBack() {
+    navigate(-1);
+  }
 
   return (
     <>
@@ -100,31 +207,30 @@ function SignInBasic() {
                 <MKTypography variant="h4" fontWeight="medium" color="white" mt={1}>
                   Sign in
                 </MKTypography>
-                {/* <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
-                  <Grid item xs={2}>
-                    <MKTypography component={MuiLink} href="#" variant="body1" color="white">
-                      <FacebookIcon color="inherit" />
-                    </MKTypography>
-                  </Grid>
-                  <Grid item xs={2}>
-                    <MKTypography component={MuiLink} href="#" variant="body1" color="white">
-                      <GitHubIcon color="inherit" />
-                    </MKTypography>
-                  </Grid>
-                  <Grid item xs={2}>
-                    <MKTypography component={MuiLink} href="#" variant="body1" color="white">
-                      <GoogleIcon color="inherit" />
-                    </MKTypography>
-                  </Grid>
-                </Grid> */}
               </MKBox>
               <MKBox pt={4} pb={3} px={3}>
                 <MKBox component="form" role="form">
                   <MKBox mb={2}>
-                    <MKInput type="email" label="Email" fullWidth />
+                    <MKInput
+                      type="email"
+                      label="Email"
+                      name="email"
+                      fullWidth
+                      onChange={handleInputChange}
+                      onFocus={() => handleInputFocus("email")}
+                      error={errors.email}
+                    />
                   </MKBox>
                   <MKBox mb={2}>
-                    <MKInput type="password" label="Password" fullWidth />
+                    <MKInput
+                      type="password"
+                      label="Password"
+                      name="password"
+                      fullWidth
+                      onChange={handleInputChange}
+                      onFocus={() => handleInputFocus("password")}
+                      error={errors.password}
+                    />
                   </MKBox>
                   <MKBox display="flex" alignItems="center" ml={-1}>
                     <Switch checked={rememberMe} onChange={handleSetRememberMe} />
@@ -139,7 +245,7 @@ function SignInBasic() {
                     </MKTypography>
                   </MKBox>
                   <MKBox mt={4} mb={1}>
-                    <MKButton variant="gradient" color="info" fullWidth>
+                    <MKButton variant="gradient" color="info" fullWidth onClick={handleLogin}>
                       sign in
                     </MKButton>
                   </MKBox>
@@ -164,6 +270,7 @@ function SignInBasic() {
           </Grid>
         </Grid>
       </MKBox>
+
       <MKBox width="100%" position="absolute" zIndex={2} bottom="1.625rem">
         <SimpleFooter light />
       </MKBox>

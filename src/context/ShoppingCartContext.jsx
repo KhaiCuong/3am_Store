@@ -28,14 +28,14 @@ function ShoppingCartProvider({ children }) {
       setIsOpen(false);
     },
     getItemQuantity() {},
-    increaseCartQuantity(id, type, times) {
+    increaseCartQuantity(id) {
       setCartItems((currItems) => {
         if (currItems.find((item) => item.id === id) == null) {
-          return [...currItems, { id, quantity: 1, type, times }];
+          return [...currItems, { id, quantity: 1 }];
         } else {
           return currItems.map((item) => {
             if (item.id === id) {
-              return { ...item, quantity: item.quantity + 1, times };
+              return { ...item, quantity: item.quantity + 1 };
             } else {
               return item;
             }
@@ -43,18 +43,14 @@ function ShoppingCartProvider({ children }) {
         }
       });
     },
-    addMultiQuantity(id, qtt, times) {
+    addMultiQuantity(id, qtt, img, name) {
       setCartItems((currItems) => {
         if (currItems.find((item) => item.id === id) == null) {
-          return [...currItems, { id, quantity: Number(qtt), times }];
+          return [...currItems, { id, quantity: Number(qtt), image: img, product_name: name }];
         } else {
           return currItems.map((item) => {
             if (item.id === id) {
-              if (typeof item.times != "undefined") {
-                return { ...item, quantity: item.quantity + Number(qtt), times };
-              } else {
-                return { ...item, quantity: item.quantity + Number(qtt), times };
-              }
+              return { ...item, quantity: item.quantity + Number(qtt) };
             } else {
               return item;
             }
@@ -67,17 +63,6 @@ function ShoppingCartProvider({ children }) {
         return currItems.map((item) => {
           if (item.id === id) {
             return { ...item, quantity: Number(qtt) };
-          } else {
-            return item;
-          }
-        });
-      });
-    },
-    changeDate(id, times) {
-      setCartItems((currItems) => {
-        return currItems.map((item) => {
-          if (item.id === id) {
-            return { ...item, times };
           } else {
             return item;
           }

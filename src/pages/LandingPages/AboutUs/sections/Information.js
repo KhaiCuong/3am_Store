@@ -36,7 +36,7 @@ function Information() {
                   <DefaultInfoCard
                     icon="public"
                     title="Fully integrated"
-                    description="We get insulted by others, lose trust for those We get back freezes"
+                    description="Save on a wide range of men's and women's watches at extraordinary sale prices."
                   />
                 </MKBox>
               </Grid>
@@ -45,7 +45,7 @@ function Information() {
                   <DefaultInfoCard
                     icon="payments"
                     title="Payments functionality"
-                    description="We get insulted by others, lose trust for those We get back freezes"
+                    description="Save on a wide range of men's and women's watches at extraordinary sale prices."
                   />
                 </MKBox>
               </Grid>
@@ -54,7 +54,7 @@ function Information() {
                   <DefaultInfoCard
                     icon="apps"
                     title="Prebuilt components"
-                    description="We get insulted by others, lose trust for those We get back freezes"
+                    description="Save on a wide range of men's and women's watches at extraordinary sale prices."
                   />
                 </MKBox>
               </Grid>
@@ -63,7 +63,7 @@ function Information() {
                   <DefaultInfoCard
                     icon="3p"
                     title="Improved platform"
-                    description="We get insulted by others, lose trust for those We get back freezes"
+                    description="Save on a wide range of men's and women's watches at extraordinary sale prices."
                   />
                 </MKBox>
               </Grid>
