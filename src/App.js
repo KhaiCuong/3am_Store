@@ -18,11 +18,18 @@ import SignInPage from "layouts/pages/authentication/sign-in";
 import SignUpBasic from "pages/LandingPages/SignUp";
 import ProductDetail from "pages/ProductPages/ProductDetail";
 import Admin from "pages/AdminPages";
-import ProductManager from "pages/AdminPages/Pages/ProductManager";
 import Dashboard from "pages/AdminPages/Pages/Dashboard";
 import Author from "pages/LandingPages/Author";
 import AboutUs from "pages/LandingPages/AboutUs";
 import UserInformation from "pages/LandingPages/UserInformation";
+import UpdateProduct from "pages/AdminPages/Pages/Product/UpdateProduct";
+import ProductManager from "pages/AdminPages/Pages/Product/ProductManager";
+import CreateProduct from "pages/AdminPages/Pages/Product/CreateProduct";
+import BrandManager from "pages/AdminPages/Pages/Brand/BrandManager";
+import CreateBrand from "pages/AdminPages/Pages/Brand/CreateBrand";
+import UpdateBrand from "pages/AdminPages/Pages/Brand/UpdateBrand";
+import AccountManager from "pages/AdminPages/Pages/Account/AccountManager";
+import CreateAccount from "pages/AdminPages/Pages/Account/CreateAccount";
 
 export default function App() {
   const { pathname } = useLocation();
@@ -65,7 +72,20 @@ export default function App() {
 
         <Route path="admin" element={<Admin></Admin>}>
           <Route index element={<Dashboard />} />
-          <Route path="products" element={<ProductManager />} />
+          <Route path="products">
+            <Route index element={<ProductManager />} />
+            <Route path="update/:id" element={<UpdateProduct />} />
+            <Route path="create" element={<CreateProduct />} />
+          </Route>
+          <Route path="brands">
+            <Route index element={<BrandManager />} />
+            <Route path="update/:id" element={<UpdateBrand />} />
+            <Route path="create" element={<CreateBrand />} />
+          </Route>
+          <Route path="accounts">
+            <Route index element={<AccountManager />} />
+            <Route path="create" element={<CreateAccount />} />
+          </Route>
         </Route>
         {/* {getRoutes(routes)} */}
         <Route path="*" element={<Navigate to="/home" />} />

@@ -11,38 +11,39 @@ function ProductData(page, sort, fKey) {
         let listProduct = [];
         const response = await GetProductList();
         if (response.status === 200) {
+          const newResponse = response.data.filter((pd) => pd.status === true);
           let listdata = [];
 
           // *** Resolve Sort and Search => create list product to display for the user to view
           if (sort == "desc") {
             if (fKey != "" && fKey != null) {
               // if User Search and choose "desc" sort
-              listdata = response.data
+              listdata = newResponse
                 .filter((i) => i.produc_name.toLowerCase().includes(fKey.toLowerCase()))
                 .sort((a, b) => (a.price > b.price ? -1 : 1));
             } else {
               // if User just sort
-              listdata = response.data.sort((a, b) => (a.price > b.price ? -1 : 1));
+              listdata = newResponse.sort((a, b) => (a.price > b.price ? -1 : 1));
             }
           } else if (sort == "asc") {
             if (fKey != "" && fKey != null) {
               // if User Search and choose "asc" sort
-              listdata = response.data
+              listdata = newResponse
                 .filter((i) => i.produc_name.toLowerCase().includes(fKey.toLowerCase()))
                 .sort((a, b) => (a.price < b.price ? -1 : 1));
             } else {
               // if User just sort
-              listdata = response.data.sort((a, b) => (a.price < b.price ? -1 : 1));
+              listdata = newResponse.sort((a, b) => (a.price < b.price ? -1 : 1));
             }
           } else {
             // if User Search
             if (fKey != "" && fKey != null) {
-              listdata = await response.data.filter((i) =>
+              listdata = await newResponse.filter((i) =>
                 i.produc_name.toLowerCase().includes(fKey.toLowerCase())
               );
             } else {
               // if the user doesn't do  anything
-              listdata = await response.data;
+              listdata = await newResponse;
             }
           }
 
@@ -50,7 +51,7 @@ function ProductData(page, sort, fKey) {
           if (fKey != "" && fKey != null) {
             // if user Search
             for (var j = 0; j < listdata.length; j++) {
-              if (response.data[j] != null) {
+              if (newResponse[j] != null) {
                 listProduct[j] = {
                   image: `http://localhost:5051${listdata[j].image}`,
                   name: `${listdata[j].produc_name}`,
@@ -64,7 +65,7 @@ function ProductData(page, sort, fKey) {
           } else {
             // if the user doesn't do  anything
             for (var i = 0 + count; i < 12 + count; i++) {
-              if (response.data[i] != null) {
+              if (newResponse[i] != null) {
                 listProduct[i] = {
                   image: `http://localhost:5051${listdata[i].image}`,
                   name: `${listdata[i].produc_name}`,
@@ -98,8 +99,9 @@ function NumberOfPage() {
       try {
         const response = await GetProductList();
         if (response.status === 200) {
-          setCount(response.data.length);
-          console.log("lengt", response.data.length);
+          const newResponse = response.data.filter((pd) => pd.status === true);
+          setCount(newResponse.length);
+          console.log("lengt", newResponse.length);
         }
       } catch (error) {
         console.log("error", error);

@@ -12,7 +12,7 @@ function dataRolex() {
       try {
         const response = await GetProductByCategoryID("RL9");
         if (response.status === 200) {
-          setData(response.data);
+          setData(response.data.filter((pd) => pd.status === true));
         }
       } catch (error) {
         console.log("error", error);
@@ -40,7 +40,7 @@ function dataCasio() {
       try {
         const response = await GetProductByCategoryID("CS7");
         if (response.status === 200) {
-          setData(response.data);
+          setData(response.data.filter((pd) => pd.status === true));
         }
       } catch (error) {
         console.log("error", error);
@@ -68,7 +68,7 @@ function dataOrient() {
       try {
         const response = await GetProductByCategoryID("OR1");
         if (response.status === 200) {
-          setData(response.data);
+          setData(response.data.filter((pd) => pd.status === true));
         }
       } catch (error) {
         console.log("error", error);
@@ -96,7 +96,7 @@ function dataOmega() {
       try {
         const response = await GetProductByCategoryID("OM2");
         if (response.status === 200) {
-          setData(response.data);
+          setData(response.data.filter((pd) => pd.status === true));
         }
       } catch (error) {
         console.log("error", error);

@@ -41,6 +41,25 @@ button {
     height: calc(100% - var(--topNavbarHeight));
     top: var(--topNavbarHeight);
   }
+  .space-sideBar {
+    margin-left: 320px !important;
+  }
 
 
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.height-20 {
+  height: 37px !important;
+}
+
+
+.height-30 {
+  height: 40px !important;
+}
+
+.height-40 {
+  height: 56px !important;
 }

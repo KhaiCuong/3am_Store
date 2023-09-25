@@ -58,6 +58,8 @@ function DefaultNavbar({ brand, transparent, light, action, sticky, relative, ce
   const [mobileNavbar, setMobileNavbar] = useState(false);
   const [mobileView, setMobileView] = useState(false);
   const [data, setData] = useState(false);
+  const [role, setRole] = useState("");
+
   const openMobileNavbar = () => setMobileNavbar(!mobileNavbar);
 
   // usecontext
@@ -208,6 +210,9 @@ function DefaultNavbar({ brand, transparent, light, action, sticky, relative, ce
 
   //  Used to re-render data when user signing-in/sign-out
   useEffect(() => {
+    // set Role to show url go to admin side
+    usertoken != null ? setRole(usertoken.role) : setRole("");
+
     let renderNavbarItems;
     let routesList =
       usertoken == null
@@ -714,6 +719,19 @@ function DefaultNavbar({ brand, transparent, light, action, sticky, relative, ce
             ml="auto"
             mr={center ? "auto" : 0}
           >
+            {role === "Admin" && (
+              <MKButton
+                component={Link}
+                to="/admin"
+                variant={
+                  action.color === "white" || action.color === "default" ? "contained" : "gradient"
+                }
+                color={action.color ? action.color : "info"}
+                size="small"
+              >
+                Go to Admin Side
+              </MKButton>
+            )}
             {data}
           </MKBox>
           <MKBox ml={{ xs: "auto", lg: 0 }}>
