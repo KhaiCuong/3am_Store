@@ -59,12 +59,13 @@ export default function ProductDetail() {
   let [user, setUser] = useState([]);
 
   // contain feedback list
+  let [totalStar, setTotalStar] = useState(0);
   let [fbList, setFbList] = useState([]);
   let [content, setContent] = useState("");
   let [star, setStar] = useState(5);
 
   // use to rerender page -> displays the comment just sent
-  let [reset, setReset] = useState([]);
+  let [reset, setReset] = useState(false);
 
   let feedbackInfor = {
     title: user.fullname,
@@ -107,9 +108,16 @@ export default function ProductDetail() {
     // get list feedback
     const fetchFeedbackDataByProductID = async () => {
       try {
+        // contain total start
+        var sum = 0;
         const response = await GetFeedbacksByProductId(id);
         if (response.status === 200) {
           setFbList(response.data);
+          for (var i = 0; i < response.data.length; i++) {
+            sum = sum + response.data[i].start;
+          }
+          // conatain average start
+          setTotalStar(sum / response.data.length);
         }
       } catch (error) {
         console.log("error", error);
@@ -164,16 +172,18 @@ export default function ProductDetail() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         const newErrors = validateForm(feedbackInfor);
         if (newErrors.length > 0) {
           setErrors(newErrors);
-          setReset(0);
         } else {
           try {
-            const response = PostFeedback(feedbackInfor);
-            console.log(response);
+            const response = await PostFeedback(feedbackInfor);
+            if (response.status === 200) {
+              Swal.fire("Completed!", "Feedback submitted successfully.", "success");
+              setReset(!reset);
+            }
           } catch (error) {
             setErrors(error);
           }
@@ -338,13 +348,13 @@ export default function ProductDetail() {
                   <h2 className="product-title">{data.produc_name}</h2>
                   <div className="rating">
                     <div className="stars">
-                      <span className="fa fa-star checked"></span>
-                      <span className="fa fa-star checked"></span>
-                      <span className="fa fa-star checked"></span>
-                      <span className="fa fa-star"></span>
-                      <span className="fa fa-star"></span>
+                      <span className={totalStar >= 1 ? "fa fa-star checked" : "fa fa-star"}></span>
+                      <span className={totalStar >= 2 ? "fa fa-star checked" : "fa fa-star"}></span>
+                      <span className={totalStar >= 3 ? "fa fa-star checked" : "fa fa-star"}></span>
+                      <span className={totalStar >= 4 ? "fa fa-star checked" : "fa fa-star"}></span>
+                      <span className={totalStar == 5 ? "fa fa-star checked" : "fa fa-star"}></span>
                     </div>
-                    <span className="review-no">41 reviews</span>
+                    <span className="review-no"> {fbList.length} reviews &nbsp;</span>
                   </div>
                   <p className="product-description">
                     {/* {data.description.length > 27
@@ -404,7 +414,7 @@ export default function ProductDetail() {
                   <div className="box-null"></div>
                   <div className="action btn-add-to-cart">
                     <button
-                      className="add-to-cart btn btn-default"
+                      className="add-to-cart btn btn-primary"
                       type="button"
                       onClick={handleAddProductToCart}
                     >

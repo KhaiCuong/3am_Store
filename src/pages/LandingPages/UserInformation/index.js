@@ -147,7 +147,31 @@ export default function UserInformation() {
         if (result.isConfirmed) {
           const response = await PutUserInfor(usertoken.user_id, user);
           if (response.status === 200) {
+            const dataDetail = {
+              ...usertoken,
+              fullname: response.data.fullname,
+              phone_number: response.data.phone_number,
+              address: response.data.address,
+            };
+            localStorage.setItem("userToken", JSON.stringify(dataDetail));
             setReset(!reset);
+
+            Swal.fire({
+              title: "Completed",
+              text: "User information updated successfully!",
+              icon: "success",
+              showCancelButton: false,
+              confirmButtonColor: "#3085d6",
+              confirmButtonText: "ok",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                try {
+                  navigate("/homes");
+                } catch (error) {
+                  console.log("err", error);
+                }
+              }
+            });
           }
         }
       } catch (error) {

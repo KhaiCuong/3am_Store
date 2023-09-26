@@ -7,6 +7,7 @@ import ReactModal from "react-modal";
 import { useShoppingCart } from "context/ShoppingCartContext";
 import { CartItem } from "./CartItem";
 import { GetUserByID, PostOrder, PostOrderDetail, PutProductQuantity } from "./service/ApiService";
+import Swal from "sweetalert2";
 
 // eslint-disable-next-line react/prop-types
 const ShoppingCartModal = ({ isOpen }) => {
@@ -18,13 +19,7 @@ const ShoppingCartModal = ({ isOpen }) => {
   // eslint-disable-next-line no-unused-vars
   const [user, setUser] = useState([]);
 
-  const initialState = {
-    phone_number: usertoken ? usertoken.phone_number : "",
-    address: usertoken ? usertoken.address : "",
-    username: usertoken ? usertoken.fullname : "",
-    user_id: usertoken ? usertoken.user_id : "",
-  };
-  let [dataOrder, setDataOrder] = useState(initialState);
+  let [dataOrder, setDataOrder] = useState([]);
 
   // calculate total amount to be paid
   let total = 0;
@@ -59,10 +54,24 @@ const ShoppingCartModal = ({ isOpen }) => {
               PutProductQuantity(cartItems[i].product_id, cartItems[i].quantity);
             }
           }
-
-          localStorage.removeItem("shopping-cart");
-          closeCart();
-          window.location.reload();
+          Swal.fire({
+            title: "Completed",
+            text: "Order successfully!",
+            icon: "success",
+            showCancelButton: false,
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "ok",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              try {
+                localStorage.removeItem("shopping-cart");
+                closeCart();
+                window.location.reload();
+              } catch (error) {
+                console.log("err", error);
+              }
+            }
+          });
         }
       } catch (error) {
         console.log("error", error);
@@ -91,13 +100,21 @@ const ShoppingCartModal = ({ isOpen }) => {
             setUser(response.data);
           }
         }
+        const initialState = {
+          phone_number: usertoken ? usertoken.phone_number : "",
+          address: usertoken ? usertoken.address : "",
+          username: usertoken ? usertoken.fullname : "",
+          user_id: usertoken ? usertoken.user_id : "",
+        };
+
+        setDataOrder(initialState);
       } catch (error) {
         console.log("error", error);
       }
     };
-
+    console.log("Rerender");
     fetchUserDataByID();
-  }, []);
+  }, [isOpen]);
 
   // console.log("total", cartItems);
 

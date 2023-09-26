@@ -38,7 +38,7 @@ async function GetFeedbacksByProductId(id) {
 
 async function PostFeedback(Feedback) {
   const data = await axios.post("http://localhost:5051/api/Feedback/AddFeedback", Feedback);
-  return data.data;
+  return data;
 }
 
 export {
