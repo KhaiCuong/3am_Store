@@ -33,7 +33,7 @@ import ExampleCard from "pages/HomePage/components/ExampleCard";
 import ReactPaginate from "react-paginate";
 import { NumberOfPage, ProductData } from "./data/ProductData";
 import { useContext, useState } from "react";
-import { FilterContext } from "../context/FilterContext";
+import { FilterContext } from "context/FilterContext";
 
 function Product() {
   const { sort, fKey } = useContext(FilterContext); // get information from context

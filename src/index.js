@@ -18,7 +18,7 @@ import * as ReactDOMClient from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "App";
 import ShoppingCartProvider from "context/ShoppingCartContext";
-import { FilterProvider } from "pages/ProductPages/ProductList/context/FilterContext";
+import { FilterProvider } from "context/FilterContext";
 
 const container = document.getElementById("root");
 

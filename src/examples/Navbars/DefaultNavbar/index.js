@@ -45,7 +45,7 @@ import breakpoints from "assets/theme/base/breakpoints";
 
 // import context
 import { useShoppingCart } from "context/ShoppingCartContext";
-import { FilterContext } from "pages/ProductPages/ProductList/context/FilterContext";
+import { FilterContext } from "context/FilterContext";
 
 function DefaultNavbar({ brand, transparent, light, action, sticky, relative, center }) {
   const [dropdown, setDropdown] = useState("");

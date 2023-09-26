@@ -13,7 +13,7 @@ import {
   GetUserByID,
   PutUserInfor,
 } from "./service/ApiService";
-import { FilterContext } from "pages/ProductPages/ProductList/context/FilterContext";
+import { FilterContext } from "context/FilterContext";
 import { useNavigate } from "react-router-dom";
 
 export default function UserInformation() {
