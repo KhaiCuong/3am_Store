@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from "react";
 import "./Cart.css";
-import { MDBCol, MDBIcon, MDBInput, MDBRow, MDBTypography } from "mdb-react-ui-kit";
-// import axios from "axios";
+import { MDBCol, MDBInput, MDBRow, MDBTypography } from "mdb-react-ui-kit";
 import { useNavigate } from "react-router-dom";
 import ReactModal from "react-modal";
 import { useShoppingCart } from "context/ShoppingCartContext";
 import { CartItem } from "./CartItem";
-import { GetUserByID, PostOrder, PostOrderDetail, PutProductQuantity } from "./service/ApiService";
+import { GetUserByID, PostOrder, PostOrderDetail, PutProductQuantity } from "services/ApiService";
 import Swal from "sweetalert2";
 
 // eslint-disable-next-line react/prop-types
 const ShoppingCartModal = ({ isOpen }) => {
+  const { cartQuantity, canOrder, setCanOrder, cartItems, closeCart } = useShoppingCart();
   const navigate = useNavigate();
-  // get function cartItem to show list product in cart
-  const { cartItems, closeCart } = useShoppingCart();
   // get userToken in localStorage to check user is logged in or not
   const usertoken = JSON.parse(localStorage.getItem("userToken"));
   // eslint-disable-next-line no-unused-vars
   const [user, setUser] = useState([]);
+
+  const [select, setSelect] = useState("");
+
+  const [errors, setErrors] = useState({});
 
   let [dataOrder, setDataOrder] = useState([]);
 
@@ -26,11 +28,30 @@ const ShoppingCartModal = ({ isOpen }) => {
   for (let i = 0; i < cartItems.length; i++) {
     total = total + Number(cartItems[i].price) * Number(cartItems[i].quantity);
   }
-
   // handle when the user clicks the "Login" button
   const handleLogin = () => {
     closeCart();
     navigate("/signin");
+  };
+
+  // Validate data
+  const validateForm = (dataInput) => {
+    let errors = {};
+    if (!dataInput.username) {
+      errors.username = "Please enter your username";
+    } else if (dataInput.username.length < 3 || dataInput.username.length > 30) {
+      errors.username = "User Name must be between 3 - 30 characters";
+    }
+    if (!dataInput.phone_number) {
+      errors.phone_number = "Please enter your Phone";
+    }
+    if (!dataInput.address) {
+      errors.address = "Please enter your Address";
+    }
+    if (select === "" || select === null) {
+      errors.payment = "Please Payment option";
+    }
+    return errors;
   };
 
   // handle when the user clicks the "Buy now" button
@@ -38,47 +59,75 @@ const ShoppingCartModal = ({ isOpen }) => {
     e.preventDefault();
     const AddOrder = async () => {
       try {
-        const response = await PostOrder(dataOrder);
-        if (response.status === 200) {
+        const response = await PostOrder({
+          ...dataOrder,
+          totalPrice: total,
+        });
+        if (response.status === 201) {
           for (let i = 0; i < cartItems.length; i++) {
             const dataDetail = {
               produc_name: cartItems[i].product_name,
               quantity: cartItems[i].quantity,
               price: cartItems[i].price,
               image: cartItems[i].image,
-              product_id: cartItems[i].id,
-              order_id: response.data.order_id,
+              productId: cartItems[i].id,
+              orderId: response.data.orderId,
             };
+            console.log("dataDetail", dataDetail);
             const detail = await PostOrderDetail(dataDetail);
-            if (detail.status === 200) {
-              PutProductQuantity(cartItems[i].product_id, cartItems[i].quantity);
+
+            if (detail.status === 201) {
+              PutProductQuantity(cartItems[i].id, cartItems[i].quantity);
             }
           }
-          Swal.fire({
-            title: "Completed",
-            text: "Order successfully!",
-            icon: "success",
-            showCancelButton: false,
-            confirmButtonColor: "#3085d6",
-            confirmButtonText: "ok",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              try {
-                localStorage.removeItem("shopping-cart");
-                closeCart();
-                window.location.reload();
-              } catch (error) {
-                console.log("err", error);
-              }
+          if (select === "2") {
+            try {
+              closeCart();
+              navigate(`/checkout/${response.data.orderId}`);
+            } catch (error) {
+              console.log("err", error);
             }
-          });
+          } else {
+            Swal.fire({
+              title: "Completed",
+              text: "Order successfully!",
+              icon: "success",
+              showCancelButton: false,
+              confirmButtonColor: "#3085d6",
+              confirmButtonText: "ok",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                try {
+                  localStorage.removeItem("shopping-cart");
+                  closeCart();
+                  window.location.reload();
+                } catch (error) {
+                  console.log("err", error);
+                }
+              }
+            });
+          }
         }
       } catch (error) {
-        console.log("error", error);
+        Swal.fire({
+          title: "Order faild",
+          text: "Please try again.",
+          icon: "error",
+        });
       }
     };
-
-    AddOrder();
+    const newErrors = validateForm(dataOrder);
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      const listerror = Object.values(newErrors).join("\n");
+      Swal.fire({
+        icon: "error",
+        title: listerror,
+      });
+      return;
+    } else {
+      AddOrder();
+    }
   };
 
   // handle when user change information
@@ -87,15 +136,29 @@ const ShoppingCartModal = ({ isOpen }) => {
     setDataOrder({
       ...dataOrder,
       [name]: value,
+      quantity: cartQuantity ? cartQuantity : 0,
+      image: cartItems[0] ? cartItems[0].image : "",
     });
   };
+
+  const handleSelectChange = (e) => {
+    console.log("e.target.value", e.target.value);
+    setSelect(e.target.value); // Lưu giá trị lựa chọn vào state
+  };
+
+  // handle disable/enable "Buy now" button
+  // const handleBuyButton = () => {
+  //   if(!canOrder){
+  //     return true
+  //   }
+  // };
 
   useEffect(() => {
     // call API to get User profile
     const fetchUserDataByID = async () => {
       try {
         if (usertoken != null) {
-          const response = await GetUserByID(usertoken.user_id);
+          const response = await GetUserByID(usertoken.userId);
           if (response.status === 200) {
             setUser(response.data);
           }
@@ -104,7 +167,9 @@ const ShoppingCartModal = ({ isOpen }) => {
           phone_number: usertoken ? usertoken.phone_number : "",
           address: usertoken ? usertoken.address : "",
           username: usertoken ? usertoken.fullname : "",
-          user_id: usertoken ? usertoken.user_id : "",
+          userId: usertoken ? usertoken.userId : "",
+          quantity: cartQuantity ? cartQuantity : 0,
+          image: cartItems[0] ? cartItems[0].image : "",
         };
 
         setDataOrder(initialState);
@@ -113,6 +178,9 @@ const ShoppingCartModal = ({ isOpen }) => {
       }
     };
     console.log("Rerender");
+    if (cartItems.length === 0) {
+      setCanOrder(false);
+    }
     fetchUserDataByID();
   }, [isOpen]);
 
@@ -178,6 +246,7 @@ const ShoppingCartModal = ({ isOpen }) => {
                   type="text"
                   size="lg"
                   name="username"
+                  error={errors.username}
                   value={dataOrder.username}
                   onChange={handleInputChange}
                 />
@@ -188,6 +257,7 @@ const ShoppingCartModal = ({ isOpen }) => {
                   type="text"
                   size="lg"
                   name="phone_number"
+                  error={errors.phone_number}
                   value={dataOrder.phone_number}
                   onChange={handleInputChange}
                 />
@@ -199,25 +269,38 @@ const ShoppingCartModal = ({ isOpen }) => {
                   size="lg"
                   name="address"
                   value={dataOrder.address}
+                  error={errors.address}
                   onChange={handleInputChange}
                 />
               </div>
               <div hidden>
                 <input type="number" name="totalPrice" value={total} />
               </div>
-              <p className="mb-3">
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit
-                <a href="#!"> obcaecati sapiente</a>.
-              </p>
 
+              <MDBTypography tag="h5">Payment</MDBTypography>
+
+              <div className="mb-5">
+                <select
+                  className="form-select form-select-lg mb-3 text-secondary"
+                  aria-label=".form-select-lg example"
+                  onChange={handleSelectChange}
+                >
+                  <option value="" disabled selected>
+                    Payment Options
+                  </option>
+                  <option value="1">Ship COD</option>
+                  <option value="2">Paypal</option>
+                </select>
+              </div>
               <button
                 type="submit"
-                className="ripple ripple-surface btn btn-primary btn-lg btn-block"
+                className="ripple ripple-surface btn btn-primary btn-lg btn-block mb-0"
+                disabled={!canOrder}
               >
                 Buy now
               </button>
 
-              <MDBTypography
+              {/* <MDBTypography
                 tag="h5"
                 className="fw-bold mb-5"
                 style={{ position: "absolute", bottom: "0" }}
@@ -226,7 +309,7 @@ const ShoppingCartModal = ({ isOpen }) => {
                   <MDBIcon fas icon="angle-left me-2" />
                   Back to shopping
                 </a>
-              </MDBTypography>
+              </MDBTypography> */}
             </form>
           ) : (
             // not logged in
@@ -239,7 +322,7 @@ const ShoppingCartModal = ({ isOpen }) => {
               >
                 Login
               </button>
-              <MDBTypography
+              {/* <MDBTypography
                 tag="h5"
                 className="fw-bold mb-5"
                 style={{ position: "absolute", bottom: "0" }}
@@ -248,7 +331,7 @@ const ShoppingCartModal = ({ isOpen }) => {
                   <MDBIcon fas icon="angle-left me-2" />
                   Back to shopping
                 </a>
-              </MDBTypography>
+              </MDBTypography> */}
             </div>
           )}
         </MDBCol>

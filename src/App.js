@@ -30,6 +30,12 @@ import CreateBrand from "pages/AdminPages/Pages/Brand/CreateBrand";
 import UpdateBrand from "pages/AdminPages/Pages/Brand/UpdateBrand";
 import AccountManager from "pages/AdminPages/Pages/Account/AccountManager";
 import CreateAccount from "pages/AdminPages/Pages/Account/CreateAccount";
+import UserOrder from "pages/LandingPages/UserOrder";
+import UserOrderDetail from "pages/LandingPages/UserOrderDetail";
+import PayPalCheckout from "components/Paypal/PayPalCheckout";
+import ResetPassword from "pages/LandingPages/ResetPassword";
+import NotFound from "pages/PageNotFound";
+import OrderManager from "pages/AdminPages/Pages/Order/OrderManager";
 
 export default function App() {
   const { pathname } = useLocation();
@@ -65,8 +71,18 @@ export default function App() {
           <Route path="productdetail/:id" element={<ProductDetail />} />
         </Route>
         <Route path="user-infor" element={<UserInformation />} />
+
+        <Route path="user-order">
+          <Route index element={<UserOrder />} />
+          <Route path="orderdetail/:id" element={<UserOrderDetail />} />
+        </Route>
+        <Route path="checkout/:id" element={<PayPalCheckout />} />
+
         <Route path="signin" element={<SignInPage />} />
         <Route path="signup" element={<SignUpBasic />} />
+        <Route path="reset-password/:id" element={<ResetPassword />} />
+        <Route path="notfound" element={<NotFound />} />
+
         <Route path="about-us" element={<AboutUs />} />
         <Route path="contact" element={<Author />} />
 
@@ -79,6 +95,11 @@ export default function App() {
           </Route>
           <Route path="brands">
             <Route index element={<BrandManager />} />
+            <Route path="update/:id" element={<UpdateBrand />} />
+            <Route path="create" element={<CreateBrand />} />
+          </Route>
+          <Route path="orders">
+            <Route index element={<OrderManager />} />
             <Route path="update/:id" element={<UpdateBrand />} />
             <Route path="create" element={<CreateBrand />} />
           </Route>

@@ -26,7 +26,9 @@ import {
   GetProductImageByID,
   GetUserByID,
   PostFeedback,
-} from "../service/ApiService";
+  GetBrandByID,
+  checkOrderProduct,
+} from "services/ApiService";
 import Swal from "sweetalert2";
 
 export default function ProductDetail() {
@@ -51,6 +53,7 @@ export default function ProductDetail() {
   let [count, setCount] = useState(1);
   let [data, setData] = useState([]);
   let [images, setImages] = useState([]);
+  let [cate, setCate] = useState([]);
 
   // use to contain errors
   const [errors, setErrors] = useState("");
@@ -63,6 +66,7 @@ export default function ProductDetail() {
   let [fbList, setFbList] = useState([]);
   let [content, setContent] = useState("");
   let [star, setStar] = useState(5);
+  let [disable, setDisable] = useState(false);
 
   // use to rerender page -> displays the comment just sent
   let [reset, setReset] = useState(false);
@@ -71,20 +75,34 @@ export default function ProductDetail() {
     title: user.fullname,
     content: content,
     start: star,
-    product_id: id,
-    user_id: user.user_id,
+    productId: id,
+    userId: user.userId,
   };
 
   useEffect(() => {
+    if (usertoken == null) {
+      setDisable(true);
+    }
     // get product information
     const fetchProductDataByID = async () => {
       try {
         const response = await GetProductByID(id);
         if (response.status === 200) {
           setData(response.data);
-          const imageResponse = await GetProductImageByID(response.data.product_id);
+          const imageResponse = await GetProductImageByID(response.data.productId);
           if (imageResponse.status === 200) {
             setImages(imageResponse.data);
+          }
+
+          const categoryResponse = await GetBrandByID(response.data.categoryId);
+          if (categoryResponse.status === 200) {
+            setCate(categoryResponse.data);
+          }
+          const check = await checkOrderProduct(usertoken.userId, response.data.productId);
+          if (check.status === 200) {
+            if (check.data === false) {
+              setDisable(true);
+            }
           }
         }
       } catch (error) {
@@ -95,7 +113,7 @@ export default function ProductDetail() {
     const fetchUserDataByID = async () => {
       try {
         if (usertoken != null) {
-          const response = await GetUserByID(usertoken.user_id);
+          const response = await GetUserByID(usertoken.userId);
           if (response.status === 200) {
             setUser(response.data);
           }
@@ -148,7 +166,7 @@ export default function ProductDetail() {
     } else {
       // when user aldready feedback for your product
       fbList.forEach((element) => {
-        if (element.user_id == feedbackInfor.user_id) {
+        if (element.userId == feedbackInfor.userId) {
           Swal.fire({
             title: "Send feedback faild!",
             text: "You cannot submit feedback because you have already done it for this product",
@@ -180,7 +198,7 @@ export default function ProductDetail() {
         } else {
           try {
             const response = await PostFeedback(feedbackInfor);
-            if (response.status === 200) {
+            if (response.status === 201) {
               Swal.fire("Completed!", "Feedback submitted successfully.", "success");
               setReset(!reset);
             }
@@ -194,7 +212,7 @@ export default function ProductDetail() {
   // handale when user change quantity product
   const handleChangeInput = (e) => {
     setCount(e.target.value);
-    // changeQuantity(item.product_id, e.target.value);
+    // changeQuantity(item.productId, e.target.value);
   };
 
   // check product instock
@@ -271,24 +289,24 @@ export default function ProductDetail() {
                 <div className="preview col-md-6">
                   <div className="preview-pic tab-content">
                     <div className="tab-pane active" id="pic-1">
-                      <img src={`http://localhost:5051/${images[0]}`} height="390px" />
+                      <img src={`http://localhost:8080/${images[0]}`} height="390px" />
                     </div>
 
                     <div className="tab-pane" id="pic-2">
-                      <img src={`http://localhost:5051/${images[1]}`} height="390px" />
+                      <img src={`http://localhost:8080/${images[1]}`} height="390px" />
                     </div>
                     <div className="tab-pane" id="pic-3">
-                      <img src={`http://localhost:5051/${images[2]}`} height="390px" />
+                      <img src={`http://localhost:8080/${images[2]}`} height="390px" />
                     </div>
 
                     {images[3] && (
                       <div className="tab-pane" id="pic-4">
-                        <img src={`http://localhost:5051/${images[3]}`} height="390px" />
+                        <img src={`http://localhost:8080/${images[3]}`} height="390px" />
                       </div>
                     )}
                     {images[4] && (
                       <div className="tab-pane" id="pic-5">
-                        <img src={`http://localhost:5051/${images[4]}`} height="390px" />
+                        <img src={`http://localhost:8080/${images[4]}`} height="390px" />
                       </div>
                     )}
                   </div>
@@ -296,7 +314,7 @@ export default function ProductDetail() {
                     <li className="active">
                       <a data-target="#pic-1" data-toggle="tab">
                         <img
-                          src={`http://localhost:5051/${images[0]}`}
+                          src={`http://localhost:8080/${images[0]}`}
                           height="71px"
                           width="103px"
                         />
@@ -305,7 +323,7 @@ export default function ProductDetail() {
                     <li>
                       <a data-target="#pic-2" data-toggle="tab">
                         <img
-                          src={`http://localhost:5051/${images[1]}`}
+                          src={`http://localhost:8080/${images[1]}`}
                           height="71px"
                           width="103px"
                         />
@@ -314,7 +332,7 @@ export default function ProductDetail() {
                     <li>
                       <a data-target="#pic-3" data-toggle="tab">
                         <img
-                          src={`http://localhost:5051/${images[2]}`}
+                          src={`http://localhost:8080/${images[2]}`}
                           height="71px"
                           width="103px"
                         />
@@ -324,7 +342,7 @@ export default function ProductDetail() {
                       <li>
                         <a data-target="#pic-4" data-toggle="tab">
                           <img
-                            src={`http://localhost:5051/${images[3]}`}
+                            src={`http://localhost:8080/${images[3]}`}
                             height="71px"
                             width="103px"
                           />
@@ -335,7 +353,7 @@ export default function ProductDetail() {
                       <li>
                         <a data-target="#pic-5" data-toggle="tab">
                           <img
-                            src={`http://localhost:5051/${images[4]}`}
+                            src={`http://localhost:8080/${images[4]}`}
                             height="71px"
                             width="103px"
                           />
@@ -356,19 +374,19 @@ export default function ProductDetail() {
                     </div>
                     <span className="review-no"> {fbList.length} reviews &nbsp;</span>
                   </div>
-                  <p className="product-description">
+                  <p className="product-description" style={{ height: "170px" }}>
                     {/* {data.description.length > 27
                       ? `${data.description.substring(0, 100)}...`
                       : data.description} */}
                     {data.description}
                   </p>
                   <h4 className="price">
-                    Current price: <span>$180</span>
+                    Current price: <span>{data.price}$</span>
                   </h4>
                   {/* <p className="vote">
                     <strong>91%</strong> of buyers enjoyed this product! <strong>(87 votes)</strong>
                   </p> */}
-                  <h5 className="sizes mt-1">
+                  {/* <h5 className="sizes mt-1">
                     sizes: &nbsp;&nbsp;
                     <input type="radio" id="small" name="size" value="small" />
                     <label htmlFor="small">S &nbsp; </label>
@@ -376,8 +394,8 @@ export default function ProductDetail() {
                     <label htmlFor="medium">M &nbsp; </label>
                     <input type="radio" id="large" name="size" value="large" />
                     <label htmlFor="large">L &nbsp; </label>
-                  </h5>
-                  <div className="def-number-input number-input safari_only mt-5">
+                  </h5> */}
+                  <div className="def-number-input number-input safari_only mt-2">
                     <button
                       className="minus"
                       onClick={() => {
@@ -411,7 +429,7 @@ export default function ProductDetail() {
                     <span className="color green"></span>
                     <span className="color blue"></span>
                   </h5> */}
-                  <div className="box-null"></div>
+                  {/* <div className="box-null"></div> */}
                   <div className="action btn-add-to-cart">
                     <button
                       className="add-to-cart btn btn-primary"
@@ -423,6 +441,31 @@ export default function ProductDetail() {
                     {/* <button className="like btn btn-default" type="button">
                       <span className="fa fa-heart"></span>
                     </button> */}
+                  </div>
+                </div>
+                <div className="container mt-5 mb-5 d-flex justify-content-around ">
+                  <div className="w-75">
+                    <h3 className="price">Technical Specifications</h3>
+                    <table className="table table-striped mt-2">
+                      <tbody>
+                        <tr>
+                          <td>Brand</td>
+                          <td>{cate.category_name}</td>
+                        </tr>
+                        <tr>
+                          <td>Waterproof</td>
+                          <td>{data.isWaterproof === true ? "Yes" : "No"}</td>
+                        </tr>
+                        <tr>
+                          <td>Diameter</td>
+                          <td>{data.diameter ? data.diameter : 0} mm</td>
+                        </tr>
+                        <tr>
+                          <td>Gender</td>
+                          <td>{data.gender}</td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
@@ -524,7 +567,7 @@ export default function ProductDetail() {
                   <div className="d-flex justify-content-end align-items-center">
                     <button
                       className="btn btn-success send btn-sm"
-                      disabled={usertoken == null}
+                      disabled={disable}
                       type="submit"
                     >
                       Send <i className="fa fa-long-arrow-right ml-1"></i>

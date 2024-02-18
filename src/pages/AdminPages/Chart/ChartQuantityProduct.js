@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Pie } from "react-chartjs-2";
-import { GetBrandList, GetProductList } from "../service/ApiService";
+import { GetBrandList, GetProductList } from "services/ApiService";
 /* eslint-disable no-unused-vars */
 import { Chart as ChartJS } from "chart.js/auto";
 
@@ -34,7 +34,7 @@ const ChartQuantityProduct = () => {
           if (product.status === 200) {
             for (let i = 0; i < product.data.length; i++) {
               for (let j = 0; j < brand.data.length; j++) {
-                if (brand.data[j].category_id == product.data[i].category_id) {
+                if (brand.data[j].categoryId == product.data[i].categoryId) {
                   arr[j] = arr[j] + 1;
                 }
               }

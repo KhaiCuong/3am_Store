@@ -1,5 +1,5 @@
 import { Icon } from "@mui/material";
-import { PostBrand } from "pages/AdminPages/service/ApiService";
+import { PostBrand } from "services/ApiService";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -58,14 +58,14 @@ export default function CreateBrand() {
       <h2 className="text-center">Create new Brand</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3 mt-3">
-          <label htmlFor="category_id" className="form-label w-100">
+          <label htmlFor="categoryId" className="form-label w-100">
             Brand Id:
           </label>
           <input
             type="text"
             className="form-control"
-            id="category_id"
-            name="category_id"
+            id="categoryId"
+            name="categoryId"
             onChange={handleChangeInput}
           />
         </div>

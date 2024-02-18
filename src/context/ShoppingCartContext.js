@@ -15,18 +15,26 @@ function ShoppingCartProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false);
   const [cartItems, setCartItems] = useLocalStorage("shopping-cart", []);
   const cartQuantity = cartItems.reduce((quantity, item) => item.quantity + quantity, 0);
-
   const [itemCart, setItemCart] = useState("");
+  const [canOrder, setCanOrder] = useState(true);
 
   const valueProvide = {
     itemCart,
     setItemCart,
+    canOrder,
     openCart() {
       setIsOpen(true);
     },
     closeCart() {
       setIsOpen(false);
     },
+    setCanOrder,
+    // disableOrderButton() {
+    //   setCanOrder(fasle);
+    // },
+    // enableOrderButton() {
+    //   setIsOpen(true);
+    // },
     getItemQuantity() {},
     increaseCartQuantity(id) {
       setCartItems((currItems) => {

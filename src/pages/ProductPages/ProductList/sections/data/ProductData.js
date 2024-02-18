@@ -1,4 +1,4 @@
-const { GetProductList } = require("pages/ProductPages/service/ApiService");
+const { GetProductList } = require("services/ApiService");
 const { useState, useEffect } = require("react");
 
 function ProductData(page, sort, fKey) {
@@ -53,10 +53,10 @@ function ProductData(page, sort, fKey) {
             for (var j = 0; j < listdata.length; j++) {
               if (newResponse[j] != null) {
                 listProduct[j] = {
-                  image: `http://localhost:5051${listdata[j].image}`,
+                  image: `http://localhost:8080/${listdata[j].image}`,
                   name: `${listdata[j].produc_name}`,
                   count: `${listdata[j].price}`,
-                  route: `http://localhost:3000/products/ProductDetail/${listdata[j].product_id}`,
+                  route: `http://localhost:3000/products/ProductDetail/${listdata[j].productId}`,
                 };
               } else {
                 break;
@@ -67,10 +67,10 @@ function ProductData(page, sort, fKey) {
             for (var i = 0 + count; i < 12 + count; i++) {
               if (newResponse[i] != null) {
                 listProduct[i] = {
-                  image: `http://localhost:5051${listdata[i].image}`,
+                  image: `http://localhost:8080/${listdata[i].image}`,
                   name: `${listdata[i].produc_name}`,
                   count: `${listdata[i].price}`,
-                  route: `http://localhost:3000/products/ProductDetail/${listdata[i].product_id}`,
+                  route: `http://localhost:3000/products/ProductDetail/${listdata[i].productId}`,
                 };
               } else {
                 break;

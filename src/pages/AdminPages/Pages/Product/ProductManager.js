@@ -1,7 +1,7 @@
 import "../../css/style.css";
 import "../../css/dataTables.bootstrap5.min.css";
 import "../../AdminManager.css";
-import { GetProductList, PutProductStatus } from "../../service/ApiService";
+import { GetProductList, PutProductStatus } from "services/ApiService";
 import { useEffect, useState } from "react";
 import CurrencyFormat from "react-currency-format";
 import { Link } from "react-router-dom";
@@ -106,7 +106,7 @@ export default function ProductManager() {
                         <input
                           type="checkbox"
                           onChange={() => {
-                            handleChangeStatus(item.product_id);
+                            handleChangeStatus(item.productId);
                           }}
                           checked={item.status}
                         />
@@ -114,7 +114,7 @@ export default function ProductManager() {
                       </label>
                     </td>
                     <td>
-                      <Link to={"update/" + item.product_id} className="btn btn-primary">
+                      <Link to={"update/" + item.productId} className="btn btn-primary">
                         Update
                       </Link>
                     </td>

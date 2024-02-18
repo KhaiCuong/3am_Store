@@ -59,6 +59,14 @@ export default function AdminSidebar() {
                         <span>Brands</span>
                       </Link>
                     </li>
+                    <li>
+                      <Link to="/admin/orders" className="nav-link px-3">
+                        <span className="me-2">
+                          <i className="fa fa-shopping-cart" aria-hidden="true"></i>
+                        </span>
+                        <span>Orders</span>
+                      </Link>
+                    </li>
                   </ul>
                 </div>
               </li>

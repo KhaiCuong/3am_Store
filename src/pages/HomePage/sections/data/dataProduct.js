@@ -1,5 +1,5 @@
 const { useState, useEffect } = require("react");
-const { GetProductByCategoryID } = require("../service/ApiService");
+const { GetProductByCategoryID } = require("services/ApiService");
 
 // const imagesPrefix =
 //   "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/material-design-system/presentation/sections";
@@ -10,7 +10,7 @@ function dataRolex() {
   useEffect(() => {
     const fetchDataProduct = async () => {
       try {
-        const response = await GetProductByCategoryID("RL9");
+        const response = await GetProductByCategoryID("CT1");
         if (response.status === 200) {
           setData(response.data.filter((pd) => pd.status === true));
         }
@@ -23,10 +23,10 @@ function dataRolex() {
   }, []);
 
   let listProduct = data.map((item) => ({
-    image: `http://localhost:5051${item.image}`,
+    image: `http://localhost:8080/${item.image}`,
     name: `${item.produc_name}`,
     count: `${item.price}`,
-    route: `http://localhost:3000/products/ProductDetail/${item.product_id}`,
+    route: `http://localhost:3000/products/ProductDetail/${item.productId}`,
   }));
 
   return listProduct;
@@ -38,7 +38,7 @@ function dataCasio() {
   useEffect(() => {
     const fetchDataProduct = async () => {
       try {
-        const response = await GetProductByCategoryID("CS7");
+        const response = await GetProductByCategoryID("CT1");
         if (response.status === 200) {
           setData(response.data.filter((pd) => pd.status === true));
         }
@@ -51,10 +51,10 @@ function dataCasio() {
   }, []);
 
   let listProduct = data.map((item) => ({
-    image: `http://localhost:5051${item.image}`,
+    image: `http://localhost:8080/${item.image}`,
     name: `${item.produc_name}`,
     count: `${item.price}`,
-    route: `http://localhost:3000/products/ProductDetail/${item.product_id}`,
+    route: `http://localhost:3000/products/ProductDetail/${item.productId}`,
   }));
 
   return listProduct;
@@ -66,7 +66,8 @@ function dataOrient() {
   useEffect(() => {
     const fetchDataProduct = async () => {
       try {
-        const response = await GetProductByCategoryID("OR1");
+        const response = await GetProductByCategoryID("CT1");
+        console.log("response", response);
         if (response.status === 200) {
           setData(response.data.filter((pd) => pd.status === true));
         }
@@ -79,10 +80,10 @@ function dataOrient() {
   }, []);
 
   let listProduct = data.map((item) => ({
-    image: `http://localhost:5051${item.image}`,
+    image: `http://localhost:8080/${item.image}`,
     name: `${item.produc_name}`,
     count: `${item.price}`,
-    route: `http://localhost:3000/products/ProductDetail/${item.product_id}`,
+    route: `http://localhost:3000/products/ProductDetail/${item.productId}`,
   }));
 
   return listProduct;
@@ -94,7 +95,7 @@ function dataOmega() {
   useEffect(() => {
     const fetchDataProduct = async () => {
       try {
-        const response = await GetProductByCategoryID("OM2");
+        const response = await GetProductByCategoryID("CT1");
         if (response.status === 200) {
           setData(response.data.filter((pd) => pd.status === true));
         }
@@ -107,10 +108,10 @@ function dataOmega() {
   }, []);
 
   let listProduct = data.map((item) => ({
-    image: `http://localhost:5051${item.image}`,
+    image: `http://localhost:8080/${item.image}`,
     name: `${item.produc_name}`,
     count: `${item.price}`,
-    route: `http://localhost:3000/products/ProductDetail/${item.product_id}`,
+    route: `http://localhost:3000/products/ProductDetail/${item.productId}`,
   }));
 
   return listProduct;

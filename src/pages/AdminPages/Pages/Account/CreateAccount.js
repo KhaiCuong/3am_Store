@@ -1,6 +1,5 @@
 import { Icon } from "@mui/material";
-import { GetUserList } from "pages/AdminPages/service/ApiService";
-import { PostUser } from "pages/AdminPages/service/ApiService";
+import { GetUserList, PostUser } from "services/ApiService";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -40,7 +39,7 @@ export default function CreateAccount() {
         } else {
           const response = await PostUser(acc);
           console.log("response", response);
-          if (response.status === 200) {
+          if (response.status === 201) {
             Swal.fire("Created!", "Your Account has been Created.", "success");
             // handle success or navigate to another page
             navigate("/admin/accounts");

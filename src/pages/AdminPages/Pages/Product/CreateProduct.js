@@ -1,7 +1,5 @@
 import { Icon } from "@mui/material";
-import { GetBrandList } from "pages/AdminPages/service/ApiService";
-import { PostImage } from "pages/AdminPages/service/ApiService";
-import { PostProduct } from "pages/AdminPages/service/ApiService";
+import { GetBrandList, PostImage, PostProduct } from "services/ApiService";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -49,17 +47,17 @@ export default function CreateProduct() {
       if (result.isConfirmed) {
         let data = {
           ...product,
-          status: product.status === "true" ? true : false,
+          status: product.status == "true" ? true : false,
         };
 
         const response = await PostProduct(data);
         console.log("response", response);
 
-        if (response.status === 200) {
+        if (response.status === 201) {
           // Check if new files are selected
           if (formData.get("files")) {
-            const imageResponse = await PostImage(response.data.product_id, formData);
-            if (imageResponse.status === 200) {
+            const imageResponse = await PostImage(response.data.data.productId, formData);
+            if (imageResponse.status === 201) {
               Swal.fire("Created!", "Your Product has been Created.", "success");
               // handle success or navigate to another page
               navigate("/admin/products");
@@ -97,14 +95,14 @@ export default function CreateProduct() {
       <h2 className="text-center">Create new product</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3 mt-3">
-          <label htmlFor="product_id" className="form-label w-100">
+          <label htmlFor="productId" className="form-label w-100">
             Product Id:
           </label>
           <input
             type="text"
             className="form-control"
-            id="product_id"
-            name="product_id"
+            id="productId"
+            name="productId"
             onChange={handleChangeInput}
           />
         </div>
@@ -132,20 +130,20 @@ export default function CreateProduct() {
           </select>
         </div>
         <div className="mb-3 mt-3">
-          <label htmlFor="category_id" className="form-label w-100">
+          <label htmlFor="categoryId" className="form-label w-100">
             Brand:
           </label>
           <select
-            id="category_id"
+            id="categoryId"
             className="form-control"
-            name="category_id"
+            name="categoryId"
             onChange={handleChangeInput}
           >
             <option value=""> --- Select watch brand --- </option>
             {brand.length > 0 ? (
               brand.map((item, index) => {
                 return (
-                  <option key={index} value={item.category_id}>
+                  <option key={index} value={item.categoryId}>
                     {item.category_name}
                   </option>
                 );

@@ -44,7 +44,7 @@ import routes from "routes";
 // Images
 import bgImage from "assets/images/bg3.jpg";
 import { useEffect, useState } from "react";
-import { GetUsers, PostRegister } from "../Service/ApiService";
+import { GetUserList, PostRegister } from "services/ApiService";
 import Swal from "sweetalert2";
 
 function SignUpBasic() {
@@ -81,7 +81,7 @@ function SignUpBasic() {
   const fetchRegister = async () => {
     try {
       const response = await PostRegister(dataInput);
-      if (response.status === 200) {
+      if (response.status === 201) {
         Swal.fire({
           title: "Registered successfully!",
           text: "Your account has been successfully registered.",
@@ -95,7 +95,6 @@ function SignUpBasic() {
     } catch (error) {
       console.log("err", error);
     }
-    fetchRegister;
   };
 
   const handleSubmit = (e) => {
@@ -127,15 +126,16 @@ function SignUpBasic() {
   // Validate data
   const validateForm = (dataInput) => {
     let errors = {};
-
     if (!dataInput.fullname) {
       errors.fullname = "User Name is required";
     } else if (dataInput.fullname.length < 3 || dataInput.fullname.length > 30) {
       errors.fullname = "User Name must be between 3 - 30 characters";
     }
-
     if (!dataInput.phone_number) {
       errors.phone_number = "Phone Number is required";
+    }
+    if (!dataInput.address) {
+      errors.address = "Address is required";
     }
     if (!dataInput.email) {
       errors.email = "Email is required";
@@ -144,13 +144,11 @@ function SignUpBasic() {
     } else if (Object.values(emailUser).includes(dataInput.email)) {
       errors.email = "Email already used!";
     }
-
     if (!dataInput.password) {
       errors.password = "Password is required";
     } else if (dataInput.password.length < 6 || dataInput.password.length > 20) {
       errors.password = "Password must be between 6 - 20 characters";
     }
-
     return errors;
   };
 
@@ -158,7 +156,7 @@ function SignUpBasic() {
   useEffect(() => {
     const fetchDataList = async () => {
       try {
-        const listUser = await GetUsers();
+        const listUser = await GetUserList();
         if (listUser.status === 200) {
           let arr = [];
           for (let i = 0; i < listUser.data.length; i++) {

@@ -1,7 +1,7 @@
 import "../../css/style.css";
 import "../../css/dataTables.bootstrap5.min.css";
 import "../../AdminManager.css";
-import { GetBrandList } from "../../service/ApiService";
+import { GetBrandList } from "services/ApiService";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "@mui/material";
@@ -87,7 +87,7 @@ export default function BrandManager() {
                         : item.description}
                     </td>
                     <td>
-                      <Link to={"update/" + item.category_id} className="btn btn-primary">
+                      <Link to={"update/" + item.categoryId} className="btn btn-primary">
                         Update
                       </Link>
                     </td>

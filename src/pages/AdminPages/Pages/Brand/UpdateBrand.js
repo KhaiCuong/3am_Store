@@ -3,7 +3,7 @@ import "../../css/dataTables.bootstrap5.min.css";
 
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { GetBrandByID, PutBrand } from "../../service/ApiService";
+import { GetBrandByID, PutBrand } from "services/ApiService";
 import Swal from "sweetalert2";
 import { Icon } from "@mui/material";
 
@@ -75,15 +75,15 @@ export default function UpdateBrand() {
       <h2 className="text-center">Update Brand</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3 mt-3">
-          <label htmlFor="category_id" className="form-label w-100">
+          <label htmlFor="categoryId" className="form-label w-100">
             Brand Id:
           </label>
           <input
             type="text"
             className="form-control"
-            id="category_id"
-            name="category_id"
-            value={brand.category_id}
+            id="categoryId"
+            name="categoryId"
+            value={brand.categoryId}
             onChange={handleChangeInput}
             disabled
           />

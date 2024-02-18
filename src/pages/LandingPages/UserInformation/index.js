@@ -9,10 +9,10 @@ import routes from "routes";
 import { Icon } from "@mui/material";
 import {
   GetDetailByOrderID,
-  GetOrdersByProductID,
+  GetOrdersByUserID,
   GetUserByID,
   PutUserInfor,
-} from "./service/ApiService";
+} from "services/ApiService";
 import { FilterContext } from "context/FilterContext";
 import { useNavigate } from "react-router-dom";
 
@@ -26,9 +26,9 @@ export default function UserInformation() {
   let [user, setUser] = useState([]);
   let [pass, setPass] = useState([]);
   // contain Order Data
-  let [orderNameList, setOrderNameList] = useState([]);
-  let [orderQuantityList, setOrderQuantityList] = useState([]);
-  let [orderPriceList, setOrderPriceList] = useState([]);
+  // let [orderNameList, setOrderNameList] = useState([]);
+  // let [orderQuantityList, setOrderQuantityList] = useState([]);
+  // let [orderPriceList, setOrderPriceList] = useState([]);
 
   // use to re-render page
   let [reset, setReset] = useState(false);
@@ -84,7 +84,7 @@ export default function UserInformation() {
               if (formValues[0].length >= 6) {
                 // if new password valid
                 let newdata = {
-                  user_id: user.user_id,
+                  userId: user.userId,
                   fullname: user.fullname,
                   phone_number: user.phone_number,
                   address: user.address,
@@ -92,7 +92,7 @@ export default function UserInformation() {
                   email: user.email,
                   password: formValues[0],
                 };
-                const response = await PutUserInfor(usertoken.user_id, newdata);
+                const response = await PutUserInfor(usertoken.userId, newdata);
                 if (response.status === 200) {
                   if (response.data.password !== pass) {
                     localStorage.removeItem("token");
@@ -145,7 +145,7 @@ export default function UserInformation() {
         });
 
         if (result.isConfirmed) {
-          const response = await PutUserInfor(usertoken.user_id, user);
+          const response = await PutUserInfor(usertoken.userId, user);
           if (response.status === 200) {
             const dataDetail = {
               ...usertoken,
@@ -184,24 +184,25 @@ export default function UserInformation() {
   useEffect(() => {
     const fetchOrderList = async () => {
       try {
-        const response = await GetOrdersByProductID(usertoken.user_id);
+        const response = await GetOrdersByUserID(usertoken.userId);
         let nameList = [];
         let quantityList = [];
         let priceList = [];
         if (response.status === 200) {
           for (let i = 0; i < response.data.length; i++) {
-            const order = await GetDetailByOrderID(response.data[i].order_id);
+            const order = await GetDetailByOrderID(response.data[i].orderId);
             if (order.status === 200) {
               for (let j = 0; j < order.data.length; j++) {
                 nameList.push(order.data[j].produc_name);
                 quantityList.push(order.data[j].quantity);
                 priceList.push(order.data[j].price);
+                console.log("nameList", nameList);
               }
             }
           }
-          setOrderNameList(nameList);
-          setOrderQuantityList(quantityList);
-          setOrderPriceList(priceList);
+          // setOrderNameList(nameList);
+          // setOrderQuantityList(quantityList);
+          // setOrderPriceList(priceList);
         }
       } catch (error) {
         console.log("error", error);
@@ -211,7 +212,7 @@ export default function UserInformation() {
     const fetchUserDataByID = async () => {
       try {
         if (usertoken != null) {
-          const response = await GetUserByID(usertoken.user_id);
+          const response = await GetUserByID(usertoken.userId);
           if (response.status === 200) {
             setUser(response.data);
             setPass(response.data.password);
@@ -353,53 +354,8 @@ export default function UserInformation() {
                     </div>
                   </div>
                   <div className="col-md-6 d-flex align-items-stretch">
-                    <div className="info-wrap bg-primary  w-100 p-lg-5 p-4">
-                      <h3 className="mb-4 mt-md-4 font-weight-bold">YOUR ORDER</h3>
-                      <p className="text-light text-right">
-                        <i className="fas fa-arrow-down"></i> Scroll down to see the review
-                      </p>
-
-                      <div
-                        style={{ overflowY: "scroll", height: "420px", borderRadius: "10px" }}
-                        className="p-3 scrollbar border "
-                      >
-                        {orderNameList.map((item, index) => (
-                          <div
-                            key={index}
-                            className="dbox w-100 align-items-start border border border-light p-2  text-secondary mb-2 bg-light"
-                            style={{ borderRadius: "10px" }}
-                          >
-                            <div className="d-flex align-items-center justify-content-between w-100  ">
-                              <div className="d-flex align-items-center">
-                                <Icon className="small">browse_gallery</Icon>
-                                <span className="font-weight-bold" style={{ fontSize: "14px" }}>
-                                  &nbsp;Product:&nbsp;
-                                </span>
-                                <span className="small">
-                                  {item > 20 ? `${item.substring(0, 20)}...` : item}
-                                </span>
-                              </div>
-                            </div>
-
-                            <div className="d-flex  align-items-start justify-content-between w-100 ">
-                              <div className="col-sm-5 pl-0 pr-0 d-flex align-items-center">
-                                <Icon className="small">discount</Icon>
-                                <span className="font-weight-bold" style={{ fontSize: "14px" }}>
-                                  &nbsp;Quantity:&nbsp;
-                                </span>
-                                <span className="small"> {orderQuantityList[index]}</span>
-                              </div>
-                            </div>
-                            <div className=" w-100 ">
-                              <div className="font-weight-bold d-flex align-items-center">
-                                <Icon className="small">monetization_on</Icon>
-                                <span style={{ fontSize: "14px" }}>&nbsp;Price:&nbsp;</span>
-                                <span className="small">{orderPriceList[index]} VND</span>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                    <div className="info-wrap  w-100 p-lg-5 p-4 bg-image flex-end">
+                      <h3 className="mb-4 mt-md-5 font-weight-bold">..... 3:00 </h3>
                     </div>
                   </div>
                 </div>

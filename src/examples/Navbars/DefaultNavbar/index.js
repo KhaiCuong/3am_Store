@@ -166,6 +166,10 @@ function DefaultNavbar({ brand, transparent, light, action, sticky, relative, ce
                 route: "/user-infor",
               },
               {
+                name: "My Order",
+                route: "/user-order",
+              },
+              {
                 name: (
                   <p className="mb-0" onClick={handleLogout}>
                     Sign out
@@ -292,6 +296,10 @@ function DefaultNavbar({ brand, transparent, light, action, sticky, relative, ce
                 {
                   name: "My profile",
                   route: "/user-infor",
+                },
+                {
+                  name: "My Order",
+                  route: "/user-order",
                 },
                 {
                   name: (

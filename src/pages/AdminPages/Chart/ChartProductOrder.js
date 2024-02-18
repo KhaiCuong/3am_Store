@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 /* eslint-disable no-unused-vars */
 import { Chart as ChartJS } from "chart.js/auto";
-import { GetBrandList, GetOrderDetailList, GetProductByID } from "../service/ApiService";
+import { GetBrandList, GetOrderDetailList, GetProductByID } from "services/ApiService";
 
 const ChartProductOrder = () => {
   const [dataRender, setDataRender] = useState({});
@@ -34,10 +34,10 @@ const ChartProductOrder = () => {
 
           if (detail.status === 200) {
             for (let i = 0; i < detail.data.length; i++) {
-              const product = await GetProductByID(detail.data[i].product_id);
+              const product = await GetProductByID(detail.data[i].productId);
 
               for (let j = 0; j < brand.data.length; j++) {
-                if (brand.data[j].category_id == product.data.category_id) {
+                if (brand.data[j].categoryId == product.data.categoryId) {
                   arr[j] = arr[j] + 1;
                 }
               }

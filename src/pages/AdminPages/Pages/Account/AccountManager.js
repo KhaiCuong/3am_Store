@@ -1,12 +1,11 @@
 import "../../css/style.css";
 import "../../css/dataTables.bootstrap5.min.css";
 import "../../AdminManager.css";
-import { DeleteUserByID, GetUserList } from "../../service/ApiService";
+import { GetUserList, PutUserStatus } from "services/ApiService";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "@mui/material";
 import ReactPaginate from "react-paginate";
-import Swal from "sweetalert2";
 
 export default function AccountManager() {
   // Account
@@ -26,28 +25,33 @@ export default function AccountManager() {
     setPage(+event.selected + 1);
   };
 
-  const handleDelete = (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const response = await DeleteUserByID(id);
-          if (response.status === 200) {
-            Swal.fire("Deleted!", "Your file has been deleted.", "success");
-            setReset(!reset);
-          }
-        } catch (error) {
-          console.log("err", error);
-        }
-      }
-    });
+  const handleChangeStatus = async (id, verify) => {
+    // Swal.fire({
+    //   title: "Are you sure?",
+    //   text: "You won't be able to revert this!",
+    //   icon: "warning",
+    //   showCancelButton: true,
+    //   confirmButtonColor: "#3085d6",
+    //   cancelButtonColor: "#d33",
+    //   confirmButtonText: "Yes, delete it!",
+    // }).then(async (result) => {
+    //   if (result.isConfirmed) {
+    //     try {
+    //       const response = await DeleteUserByID(id);
+    //       if (response.status === 200) {
+    //         Swal.fire("Deleted!", "Your file has been deleted.", "success");
+    //         setReset(!reset);
+    //       }
+    //     } catch (error) {
+    //       console.log("err", error);
+    //     }
+    //   }
+    // });
+
+    const response = await PutUserStatus(id, !verify);
+    if (response.status === 200) {
+      setReset(!reset);
+    }
   };
 
   useEffect(() => {
@@ -115,14 +119,25 @@ export default function AccountManager() {
                     <td>{item.address}</td>
                     <td>{item.role}</td>
                     <td>
-                      <button
+                      {/* <button
                         className="btn btn-danger"
                         onClick={() => {
-                          handleDelete(item.user_id);
+                          handleDelete(item.userId);
                         }}
                       >
                         Delete
-                      </button>
+                      </button> */}
+
+                      <label className="switch ml-4">
+                        <input
+                          type="checkbox"
+                          onChange={() => {
+                            handleChangeStatus(item.userId, item.verify);
+                          }}
+                          checked={item.verify}
+                        />
+                        <span className="slider round "></span>
+                      </label>
                     </td>
                   </tr>
                 );

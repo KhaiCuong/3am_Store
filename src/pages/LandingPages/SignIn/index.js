@@ -15,12 +15,13 @@ Coded by www.creative-tim.com
 
 import { useContext, useState } from "react";
 
+import "./style.css";
+
 // react-router-dom components
 import { Link, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
-import Switch from "@mui/material/Switch";
 import Grid from "@mui/material/Grid";
 import Icon from "@mui/material/Icon";
 // import MuiLink from "@mui/material/Link";
@@ -45,12 +46,12 @@ import routes from "routes";
 
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
-import { PostLogin } from "../Service/ApiService";
+import { PostLogin, sendVerifyCode } from "services/ApiService";
 import { FilterContext } from "context/FilterContext";
 import Swal from "sweetalert2";
 
 function SignInBasic() {
-  const [rememberMe, setRememberMe] = useState(false);
+  // const [rememberMe, setRememberMe] = useState(false);
   // use to contain errors
   const [errors, setErrors] = useState({});
   // initial value of data Login
@@ -61,7 +62,6 @@ function SignInBasic() {
   // use to contain data Login
   const [dataLogin, setDataLogin] = useState(initialState);
   // change status of button "remember me"
-  const handleSetRememberMe = () => setRememberMe(!rememberMe);
   // useContext to transmit login status for re-render navbar
   const { setNavbar, navbar } = useContext(FilterContext);
   const navigate = useNavigate();
@@ -80,6 +80,7 @@ function SignInBasic() {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userToken", JSON.stringify(response.data.userToken));
         setNavbar(!navbar);
+
         // navigate
         if (response.data.userToken.role === "Admin") {
           navigate("/admin");
@@ -100,6 +101,49 @@ function SignInBasic() {
       });
     }
   };
+
+  // handle login
+  function handleForgotPassword(e) {
+    e.preventDefault();
+    Swal.fire({
+      title: "Enter your email address.",
+      input: "email",
+      inputAttributes: {
+        autocapitalize: "off",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Look up",
+      showLoaderOnConfirm: true,
+      preConfirm: async (email) => {
+        try {
+          const response = await sendVerifyCode(email);
+          console.log("sendVerifyCode", response);
+          if (response.status === 200) {
+            Swal.fire({
+              title: "Send Mail successfully!",
+              text: "Please enter your email to confirm.",
+              icon: "success",
+            });
+          }
+        } catch (error) {
+          Swal.fire({
+            title: "Not found",
+            text: "Email not found ,Please try again.",
+            icon: "error",
+          });
+        }
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    });
+    // .then((result) => {
+    //   if (result.isConfirmed) {
+    //     Swal.fire({
+    //       title: `${result.value.login}'s avatar`,
+    //       imageUrl: result.value.avatar_url,
+    //     });
+    //   }
+    // });
+  }
 
   // handle login
   function handleLogin(e) {
@@ -233,16 +277,10 @@ function SignInBasic() {
                     />
                   </MKBox>
                   <MKBox display="flex" alignItems="center" ml={-1}>
-                    <Switch checked={rememberMe} onChange={handleSetRememberMe} />
-                    <MKTypography
-                      variant="button"
-                      fontWeight="regular"
-                      color="text"
-                      onClick={handleSetRememberMe}
-                      sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
-                    >
-                      &nbsp;&nbsp;Remember me
-                    </MKTypography>
+                    <h6 onClick={handleForgotPassword} className="ml-2 cursor-pointer">
+                      Forgot your Password ?
+                    </h6>
+                    {/* <LinkIn className="ml-2 h6 text-primary"></Link> */}
                   </MKBox>
                   <MKBox mt={4} mb={1}>
                     <MKButton variant="gradient" color="info" fullWidth onClick={handleLogin}>

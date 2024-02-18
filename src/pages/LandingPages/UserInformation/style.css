@@ -8374,3 +8374,46 @@ label.star:before {
   content: '\f006';
   font-family: FontAwesome;
 }
+
+
+.bg-image {
+ background-image: url('assets/images/profile2.jpg');
+ background-size: cover;
+ }
+
+ .flex-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+
+.border-radius-left {
+  border-top-left-radius : 30%; 
+  border-bottom-left-radius : 30%; 
+
+}
+
+.border-radius-right {
+  border-top-right-radius : 30%; 
+  border-bottom-right-radius : 30%; 
+}
+
+
+.container-Order {
+  width: 76%;
+  margin-right: auto;
+  margin-left: auto; 
+}
+
+.border-radius {
+  border-radius: 0.25 rem;
+}
+
+.fontsize-small {
+  font-size: 14px;
+}
+
+
+.heigh-100 {
+  min-height  : 600px;
+}

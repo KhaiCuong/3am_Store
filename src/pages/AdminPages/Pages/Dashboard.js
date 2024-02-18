@@ -3,7 +3,7 @@ import "../css/dataTables.bootstrap5.min.css";
 import ChartQuantityProduct from "../Chart/ChartQuantityProduct";
 import ChartProductOrder from "../Chart/ChartProductOrder";
 import { useEffect, useState } from "react";
-import { GetBrandList, GetOrderDetailList, GetProductList } from "../service/ApiService";
+import { GetBrandList, GetOrderDetailList, GetProductList } from "services/ApiService";
 import { Icon } from "@mui/material";
 import { Link } from "react-router-dom";
 
@@ -18,7 +18,7 @@ export default function Dashboard() {
       try {
         const detail = await GetOrderDetailList();
         if (detail.status === 200) {
-          setDetailList(detail.data);
+          setDetailList(detail.data.slice(0, 10));
           let total = 0;
           for (let i = 0; i < detail.data.length; i++) {
             total = total + detail.data[i].quantity * detail.data[i].price;
@@ -182,9 +182,9 @@ export default function Dashboard() {
                           detailList.map((item, index) => {
                             return (
                               <tr key={index}>
-                                <td>{item.detail_id}</td>
-                                <td>{item.order_id}</td>
-                                <td>{item.product_id}</td>
+                                <td>{item.detailId}</td>
+                                <td>{item.orderId}</td>
+                                <td>{item.productId}</td>
                                 <td>{item.product_name}</td>
                                 <td>{item.quantity}</td>
                                 <td>{item.price}</td>

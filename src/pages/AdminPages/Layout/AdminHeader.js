@@ -1,7 +1,7 @@
 import { Icon } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { PutUserInfor } from "../service/ApiService";
+import { PutUserInfor } from "services/ApiService";
 import "../css/style.css";
 
 export default function AdminHeader() {
@@ -15,6 +15,7 @@ export default function AdminHeader() {
       localStorage.removeItem("token");
       localStorage.removeItem("userToken");
     }
+    navigate("home");
   }
 
   const handleChangePassword = (e) => {
@@ -59,7 +60,7 @@ export default function AdminHeader() {
               if (formValues[0].length >= 6) {
                 // if new password valid
                 let newdata = {
-                  user_id: 1,
+                  userId: 1,
                   fullname: "Admin",
                   phone_number: "0946643252",
                   address: "Thu Duc",
@@ -67,7 +68,7 @@ export default function AdminHeader() {
                   email: "admin@gmail.com",
                   password: formValues[0],
                 };
-                const response = await PutUserInfor(usertoken.user_id, newdata);
+                const response = await PutUserInfor(usertoken.userId, newdata);
                 if (response.status === 200) {
                   Swal.fire({
                     icon: "success",

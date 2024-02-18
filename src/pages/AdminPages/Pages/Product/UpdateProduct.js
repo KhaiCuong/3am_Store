@@ -9,7 +9,7 @@ import {
   GetProductImageByID,
   PostNewImage,
   PutProduct,
-} from "../../service/ApiService";
+} from "services/ApiService";
 import Swal from "sweetalert2";
 import { Icon } from "@mui/material";
 
@@ -70,7 +70,7 @@ export default function UpdateProduct() {
             if (formData.get("files")) {
               const imageResponse = await PostNewImage(id, formData);
 
-              if (imageResponse.status === 200) {
+              if (imageResponse.status === 201) {
                 Swal.fire("Updated!", "Your Product has been updated.", "success");
                 // handle success or navigate to another page
                 navigate("/admin/products");
@@ -94,7 +94,7 @@ export default function UpdateProduct() {
         const response = await GetProductByID(id);
         if (response.status === 200) {
           setProduct(response.data);
-          const imageResponse = await GetProductImageByID(response.data.product_id);
+          const imageResponse = await GetProductImageByID(response.data.productId);
           if (imageResponse.status === 200) {
             setImages(imageResponse.data);
           }
@@ -123,15 +123,15 @@ export default function UpdateProduct() {
       <h2 className="text-center">Update product</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3 mt-3">
-          <label htmlFor="product_id" className="form-label w-100">
+          <label htmlFor="productId" className="form-label w-100">
             Product Id:
           </label>
           <input
             type="text"
             className="form-control"
-            id="product_id"
-            name="product_id"
-            value={product.product_id}
+            id="productId"
+            name="productId"
+            value={product.productId}
             onChange={handleChangeInput}
             disabled
           />
@@ -163,13 +163,13 @@ export default function UpdateProduct() {
           </select>
         </div>
         <div className="mb-3 mt-3">
-          <label htmlFor="category_id" className="form-label w-100">
+          <label htmlFor="categoryId" className="form-label w-100">
             Brand:
           </label>
           <select
-            id="category_id"
+            id="categoryId"
             className="form-control"
-            name="category_id"
+            name="categoryId"
             onChange={handleChangeInput}
           >
             {brand.length > 0 ? (
@@ -177,8 +177,8 @@ export default function UpdateProduct() {
                 return (
                   <option
                     key={index}
-                    value={item.category_id}
-                    selected={item.category_id === product.category_id}
+                    value={item.categoryId}
+                    selected={item.categoryId === product.categoryId}
                   >
                     {item.category_name}
                   </option>
@@ -242,7 +242,7 @@ export default function UpdateProduct() {
             {images.map((item, index) => (
               <div key={index} style={{ width: "200px", height: "200px", margin: "5px" }}>
                 <img
-                  src={`http://localhost:5051/${item}`}
+                  src={`http://localhost:8080/${item}`}
                   alt={item}
                   className=""
                   style={{
