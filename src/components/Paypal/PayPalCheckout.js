@@ -1,7 +1,8 @@
 import { useShoppingCart } from "context/ShoppingCartContext";
 import React, { useRef, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { PostPayment } from "services/ApiService";
+import { GetDetailByOrderID } from "services/ApiService";
+import { PutPaymenttatus } from "services/ApiService";
 import Swal from "sweetalert2";
 
 function PayPalCheckout() {
@@ -10,7 +11,6 @@ function PayPalCheckout() {
   const { cartItems } = useShoppingCart();
   const navigate = useNavigate();
   const { id } = useParams();
-  const usertoken = JSON.parse(localStorage.getItem("userToken"));
   // eslint-disable-next-line no-unused-vars
 
   let total = 0;
@@ -19,45 +19,67 @@ function PayPalCheckout() {
   }
 
   useEffect(() => {
-    // eslint-disable-next-line no-unused-vars
-    window.paypal
-      .Buttons({
-        createOrder: (data, actions) => {
-          return actions.order.create({
-            intent: "CAPTURE",
-            purchase_units: [
-              {
-                description: "Your Order",
-                amount: {
-                  currency_code: "USD",
-                  value: total,
-                },
+    const fetchProductDataByID = async () => {
+      if (total === 0) {
+        const response = await GetDetailByOrderID(id);
+        if (response.status === 200) {
+          for (let i = 0; i < response.data.length; i++) {
+            total = total + Number(response.data[i].price) * Number(response.data[i].quantity);
+          }
+          // eslint-disable-next-line no-unused-vars
+          window.paypal
+            .Buttons({
+              createOrder: (data, actions) => {
+                return actions.order.create({
+                  intent: "CAPTURE",
+                  purchase_units: [
+                    {
+                      description: "Your Order",
+                      amount: {
+                        currency_code: "USD",
+                        value: total,
+                      },
+                    },
+                  ],
+                });
               },
-            ],
-          });
-        },
-        onApprove: async (data, actions) => {
-          const order = await actions.order.capture();
+              onApprove: async (data, actions) => {
+                const order = await actions.order.capture();
 
-          console.log("success", order);
-          setTransactionStatus("success");
-        },
-        onError: (err) => {
-          console.log(err);
-          setTransactionStatus("failure");
-        },
-      })
-      .render(paypal.current);
+                console.log("success", order);
+                setTransactionStatus("success");
+              },
+              onError: (err) => {
+                console.log(err);
+                setTransactionStatus("failure");
+              },
+            })
+            .render(paypal.current);
+        } else {
+          Swal.fire({
+            title: "Payment faild",
+            text: "Please try again.",
+            icon: "error",
+            confirmButtonText: "ok",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              try {
+                navigate("/home");
+              } catch (error) {
+                console.log("err", error);
+              }
+            }
+          });
+        }
+      }
+    };
+    fetchProductDataByID();
   }, []);
 
   const AddPayment = async () => {
     try {
-      const dataPayment = {
-        orderId: id,
-        fullname: usertoken.fullname ? usertoken.fullname : "",
-      };
-      const response = await PostPayment(dataPayment);
-      if (response.status === 201) {
+      const response = await PutPaymenttatus(id, true);
+      if (response.status === 200) {
         Swal.fire({
           title: "Completed",
           text: "Order successfully!",
@@ -69,25 +91,6 @@ function PayPalCheckout() {
           if (result.isConfirmed) {
             try {
               navigate("/home");
-              localStorage.removeItem("shopping-cart");
-              window.location.reload();
-            } catch (error) {
-              console.log("err", error);
-            }
-          }
-        });
-      } else {
-        Swal.fire({
-          title: "Payment faild",
-          text: "Please try again.",
-          icon: "error",
-          confirmButtonText: "ok",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            try {
-              navigate("/home");
-              localStorage.removeItem("shopping-cart");
-              window.location.reload();
             } catch (error) {
               console.log("err", error);
             }
@@ -116,8 +119,6 @@ function PayPalCheckout() {
       if (result.isConfirmed) {
         try {
           navigate("/home");
-          localStorage.removeItem("shopping-cart");
-          window.location.reload();
         } catch (error) {
           console.log("err", error);
         }

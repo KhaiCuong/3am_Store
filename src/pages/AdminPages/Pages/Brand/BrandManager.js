@@ -28,7 +28,7 @@ export default function BrandManager() {
         const response = await GetBrandList();
         if (response.status === 200) {
           // Set total page
-          setTotalPage((response.data.length / 12).toFixed());
+          setTotalPage(Math.ceil(response.data.length / 12).toFixed());
           // Set total Brand
           setTotal(response.data.length);
           let listBrand = [];
@@ -54,51 +54,53 @@ export default function BrandManager() {
     <main className="mt-5 pt-3 mb-5">
       <div className="container pt-4">
         <div className="d-flex align-items-center justify-content-between">
-          <div className="text-secondary small"> Total : {total} Brand</div>
+          <div className="text-secondary small"> Total : {total} Brands</div>
           <h2 className="text-center font-weight-bold">BRAND TABLE</h2>
 
           <Link to="create" className="btn btn-danger rounded d-flex align-items-center">
             <Icon>add</Icon> <span> &nbsp;Create New Brand</span>
           </Link>
         </div>
+        <div style={{ minHeight: "700px" }}>
+          <table className="table">
+            <thead className="table-dark">
+              <tr>
+                <th>No</th>
+                <th>Brand Name</th>
+                <th>Description</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.length > 0 ? (
+                data.map((item, index) => {
+                  return (
+                    <tr
+                      key={index}
+                      style={{ backgroundColor: item.status === false ? "silver" : "white" }}
+                    >
+                      <td>{index + 1}</td>
+                      <td style={{ width: "230px" }}>{item.category_name}</td>
+                      <td>
+                        {item.description.length > 100
+                          ? `${item.description.substring(0, 100)}...`
+                          : item.description}
+                      </td>
+                      <td>
+                        <Link to={"update/" + item.categoryId} className="btn btn-primary">
+                          Update
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <div>No Brand to show</div>
+              )}
+            </tbody>
+          </table>
+        </div>
 
-        <table className="table">
-          <thead className="table-dark">
-            <tr>
-              <th>No</th>
-              <th>Brand Name</th>
-              <th>Description</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.length > 0 ? (
-              data.map((item, index) => {
-                return (
-                  <tr
-                    key={index}
-                    style={{ backgroundColor: item.status === false ? "silver" : "white" }}
-                  >
-                    <td>{index + 1}</td>
-                    <td style={{ width: "230px" }}>{item.category_name}</td>
-                    <td>
-                      {item.description.length > 100
-                        ? `${item.description.substring(0, 100)}...`
-                        : item.description}
-                    </td>
-                    <td>
-                      <Link to={"update/" + item.categoryId} className="btn btn-primary">
-                        Update
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })
-            ) : (
-              <div>No Brand to show</div>
-            )}
-          </tbody>
-        </table>
         <div className="d-flex justify-content-center mb-5">
           <ReactPaginate
             breakLabel="..."

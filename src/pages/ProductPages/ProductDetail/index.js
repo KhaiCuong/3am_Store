@@ -30,6 +30,7 @@ import {
   checkOrderProduct,
 } from "services/ApiService";
 import Swal from "sweetalert2";
+import { Domain } from "services/Domain";
 
 export default function ProductDetail() {
   const navigate = useNavigate();
@@ -102,6 +103,7 @@ export default function ProductDetail() {
           if (check.status === 200) {
             if (check.data === false) {
               setDisable(true);
+              console.log("check.data", check.data);
             }
           }
         }
@@ -289,74 +291,54 @@ export default function ProductDetail() {
                 <div className="preview col-md-6">
                   <div className="preview-pic tab-content">
                     <div className="tab-pane active" id="pic-1">
-                      <img src={`http://localhost:8080/${images[0]}`} height="390px" />
+                      <img src={`${Domain}/${images[0]}`} height="390px" />
                     </div>
 
                     <div className="tab-pane" id="pic-2">
-                      <img src={`http://localhost:8080/${images[1]}`} height="390px" />
+                      <img src={`${Domain}/${images[1]}`} height="390px" />
                     </div>
                     <div className="tab-pane" id="pic-3">
-                      <img src={`http://localhost:8080/${images[2]}`} height="390px" />
+                      <img src={`${Domain}/${images[2]}`} height="390px" />
                     </div>
 
                     {images[3] && (
                       <div className="tab-pane" id="pic-4">
-                        <img src={`http://localhost:8080/${images[3]}`} height="390px" />
+                        <img src={`${Domain}/${images[3]}`} height="390px" />
                       </div>
                     )}
                     {images[4] && (
                       <div className="tab-pane" id="pic-5">
-                        <img src={`http://localhost:8080/${images[4]}`} height="390px" />
+                        <img src={`${Domain}/${images[4]}`} height="390px" />
                       </div>
                     )}
                   </div>
                   <ul className="preview-thumbnail nav nav-tabs">
                     <li className="active">
                       <a data-target="#pic-1" data-toggle="tab">
-                        <img
-                          src={`http://localhost:8080/${images[0]}`}
-                          height="71px"
-                          width="103px"
-                        />
+                        <img src={`${Domain}/${images[0]}`} height="71px" width="103px" />
                       </a>
                     </li>
                     <li>
                       <a data-target="#pic-2" data-toggle="tab">
-                        <img
-                          src={`http://localhost:8080/${images[1]}`}
-                          height="71px"
-                          width="103px"
-                        />
+                        <img src={`${Domain}/${images[1]}`} height="71px" width="103px" />
                       </a>
                     </li>
                     <li>
                       <a data-target="#pic-3" data-toggle="tab">
-                        <img
-                          src={`http://localhost:8080/${images[2]}`}
-                          height="71px"
-                          width="103px"
-                        />
+                        <img src={`${Domain}/${images[2]}`} height="71px" width="103px" />
                       </a>
                     </li>
                     {images[3] && (
                       <li>
                         <a data-target="#pic-4" data-toggle="tab">
-                          <img
-                            src={`http://localhost:8080/${images[3]}`}
-                            height="71px"
-                            width="103px"
-                          />
+                          <img src={`${Domain}/${images[3]}`} height="71px" width="103px" />
                         </a>
                       </li>
                     )}
                     {images[4] && (
                       <li>
                         <a data-target="#pic-5" data-toggle="tab">
-                          <img
-                            src={`http://localhost:8080/${images[4]}`}
-                            height="71px"
-                            width="103px"
-                          />
+                          <img src={`${Domain}/${images[4]}`} height="71px" width="103px" />
                         </a>
                       </li>
                     )}
@@ -374,12 +356,15 @@ export default function ProductDetail() {
                     </div>
                     <span className="review-no"> {fbList.length} reviews &nbsp;</span>
                   </div>
-                  <p className="product-description" style={{ height: "170px" }}>
+                  <p className="product-description" style={{ height: "140px" }}>
                     {/* {data.description.length > 27
                       ? `${data.description.substring(0, 100)}...`
                       : data.description} */}
                     {data.description}
                   </p>
+                  <h6 className="totalBuy">
+                    Total Buy: <span>{data.totalBuy}</span>
+                  </h6>
                   <h4 className="price">
                     Current price: <span>{data.price}$</span>
                   </h4>

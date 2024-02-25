@@ -10,6 +10,23 @@ import { Icon } from "@mui/material";
 export default function UpdateBrand() {
   const navigate = useNavigate();
   const [brand, setBrand] = useState([]);
+  const [errors, setErrors] = useState({});
+  // Validate data
+  const validateForm = (dataInput) => {
+    let errors = {};
+    if (!dataInput.category_name) {
+      errors.category_name = "Please enter your Brand Name";
+    } else if (dataInput.category_name.length < 3 || dataInput.category_name.length > 30) {
+      errors.category_name = "Brand Name must be between 3 - 30 characters";
+    }
+
+    if (!dataInput.description) {
+      errors.description = "Please enter your description";
+    } else if (dataInput.description.length < 3 || dataInput.description.length > 300) {
+      errors.description = "Product Name must be between 3 - 300 characters";
+    }
+    return errors;
+  };
 
   const handleBack = () => {
     navigate("/admin/brands");
@@ -23,36 +40,50 @@ export default function UpdateBrand() {
       ...brand,
       [name]: value,
     });
+    setErrors({
+      ...errors,
+      [name]: "",
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, update it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          let data = {
-            ...brand,
-            status: brand.status === "true" ? true : false,
-          };
-          const response = await PutBrand(id, data);
-          if (response.status === 200) {
-            Swal.fire("Updated!", "Your Brand has been updated.", "success");
-            // handle success or navigate to another page
-            navigate("/admin/brands");
+    const newErrors = validateForm(brand);
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      Swal.fire({
+        icon: "error",
+        title: "Please Enter Information",
+      });
+      return;
+    } else {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, update it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            let data = {
+              ...brand,
+              status: brand.status === "true" || brand.status === true ? true : false,
+            };
+            const response = await PutBrand(id, data);
+            if (response.status === 200) {
+              Swal.fire("Updated!", "Your Brand has been updated.", "success");
+              // handle success or navigate to another page
+              navigate("/admin/brands");
+            }
+          } catch (error) {
+            console.log("err", error);
           }
-        } catch (error) {
-          console.log("err", error);
         }
-      }
-    });
+      });
+    }
   };
 
   useEffect(() => {
@@ -100,6 +131,12 @@ export default function UpdateBrand() {
             name="category_name"
             onChange={handleChangeInput}
           />
+          <span
+            className="text-danger h6"
+            hidden={errors.category_name != null || errors.category_name != "" ? false : true}
+          >
+            {errors.category_name}
+          </span>
         </div>
         <div className="mb-3 mt-3">
           <label htmlFor="status" className="form-label w-100">
@@ -127,6 +164,12 @@ export default function UpdateBrand() {
             name="description"
             onChange={handleChangeInput}
           />
+          <span
+            className="text-danger h6"
+            hidden={errors.description != null || errors.description != "" ? false : true}
+          >
+            {errors.description}
+          </span>
         </div>
 
         <div className="d-flex justify-content-around align-items-center mt-4">

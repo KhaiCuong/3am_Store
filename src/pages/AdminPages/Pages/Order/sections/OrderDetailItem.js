@@ -3,21 +3,13 @@ import { MDBCardImage, MDBTypography } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
 import { GetBrandByID, GetProductByID } from "services/ApiService";
 import { Icon } from "@mui/material";
-import { GetOrderByID } from "services/ApiService";
-import { useNavigate } from "react-router-dom";
 import { Domain } from "services/Domain";
 
 // eslint-disable-next-line react/prop-types
-export function OrderDetailItem({ productId, quantity, orderId }) {
+export function OrderDetailItem({ productId, quantity }) {
   // eslint-disable-next-line no-unused-vars
   const [item, setItem] = useState([]);
   const [cate, setCate] = useState(quantity);
-  const [statusOrder, setStatusOrder] = useState("");
-  const navigate = useNavigate();
-
-  const handlePageReview = (pdID) => {
-    navigate(`/products/ProductDetail/${pdID}`);
-  };
 
   useEffect(() => {
     const fetchProductDataByID = async () => {
@@ -28,11 +20,6 @@ export function OrderDetailItem({ productId, quantity, orderId }) {
           const category = await GetBrandByID(response.data.categoryId);
           if (category.status === 200) {
             setCate(category.data);
-          }
-          const responseOrder = await GetOrderByID(orderId);
-          if (responseOrder.status === 200) {
-            setStatusOrder(responseOrder.data.status);
-            console.log("status", responseOrder.data.status);
           }
         }
       } catch (error) {
@@ -62,15 +49,6 @@ export function OrderDetailItem({ productId, quantity, orderId }) {
           <MDBTypography tag="h6" style={{ color: "#9e9e9e" }}>
             Brand: {cate.category_name}
           </MDBTypography>
-          <btn
-            className="btn btn-info"
-            onClick={() => {
-              handlePageReview(item.productId);
-            }}
-            hidden={statusOrder === "Completed" ? false : true}
-          >
-            Review
-          </btn>
         </div>
         <div className="d-flex align-items-center justify-content-between">
           <p className="fw-bold mb-0 me-5 pe-3">{item.price}$</p>

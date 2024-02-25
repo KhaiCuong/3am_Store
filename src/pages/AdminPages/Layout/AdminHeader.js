@@ -130,7 +130,7 @@ export default function AdminHeader() {
           <div className="collapse navbar-collapse" id="topNavBar">
             <form className="d-flex ms-auto my-3 my-lg-0 align-items-center">
               <div className="input-group">
-                <input
+                {/* <input
                   className="form-control height-30"
                   type="search"
                   placeholder="Search"
@@ -138,7 +138,7 @@ export default function AdminHeader() {
                 />
                 <button className="btn btn-primary mb-0 height-30 " type="submit">
                   <i className="bi bi-search"></i>
-                </button>
+                </button> */}
               </div>
             </form>
             <ul className="navbar-nav ml-2">

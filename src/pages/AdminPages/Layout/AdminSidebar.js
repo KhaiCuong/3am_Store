@@ -67,6 +67,14 @@ export default function AdminSidebar() {
                         <span>Orders</span>
                       </Link>
                     </li>
+                    <li>
+                      <Link to="/admin/reviews" className="nav-link px-3">
+                        <span className="me-2">
+                          <i className="fa fa-comment" aria-hidden="true"></i>
+                        </span>
+                        <span>Reviews</span>
+                      </Link>
+                    </li>
                   </ul>
                 </div>
               </li>

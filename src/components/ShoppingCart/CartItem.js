@@ -4,6 +4,7 @@ import { MDBCardImage, MDBIcon, MDBTypography } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
 import { GetBrandByID, GetProductByID } from "services/ApiService";
 import { Icon } from "@mui/material";
+import { Domain } from "services/Domain";
 
 // eslint-disable-next-line react/prop-types
 export function CartItem({ id, quantity }) {
@@ -94,7 +95,7 @@ export function CartItem({ id, quantity }) {
       {/* Show image product */}
       <div className="flex-shrink-0" style={{ width: "150px", height: "101px" }}>
         <MDBCardImage
-          src={`http://localhost:8080/${item.image}`}
+          src={`${Domain}/${item.image}`}
           fluid
           style={{ width: "150px", height: "101px" }}
           alt="image"
@@ -112,7 +113,7 @@ export function CartItem({ id, quantity }) {
           <MDBIcon fas icon="times" />
         </button>
         <MDBTypography tag="h4" className="text-primary">
-          {item.produc_name > 20 ? `${item.produc_name(0, 20)}...` : item.produc_name}
+          {item.product_name > 20 ? `${item.product_name(0, 20)}...` : item.product_name}
           &nbsp; <Icon>auto_awesome</Icon>
         </MDBTypography>
         <div className="d-flex align-items-center justify-content-between">

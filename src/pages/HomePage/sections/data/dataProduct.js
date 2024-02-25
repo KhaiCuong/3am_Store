@@ -1,3 +1,5 @@
+import { Domain } from "services/Domain";
+
 const { useState, useEffect } = require("react");
 const { GetProductByCategoryID } = require("services/ApiService");
 
@@ -10,7 +12,7 @@ function dataRolex() {
   useEffect(() => {
     const fetchDataProduct = async () => {
       try {
-        const response = await GetProductByCategoryID("CT1");
+        const response = await GetProductByCategoryID("RL");
         if (response.status === 200) {
           setData(response.data.filter((pd) => pd.status === true));
         }
@@ -23,7 +25,7 @@ function dataRolex() {
   }, []);
 
   let listProduct = data.map((item) => ({
-    image: `http://localhost:8080/${item.image}`,
+    image: `${Domain}/${item.image}`,
     name: `${item.produc_name}`,
     count: `${item.price}`,
     route: `http://localhost:3000/products/ProductDetail/${item.productId}`,
@@ -38,7 +40,7 @@ function dataCasio() {
   useEffect(() => {
     const fetchDataProduct = async () => {
       try {
-        const response = await GetProductByCategoryID("CT1");
+        const response = await GetProductByCategoryID("CK");
         if (response.status === 200) {
           setData(response.data.filter((pd) => pd.status === true));
         }
@@ -51,7 +53,7 @@ function dataCasio() {
   }, []);
 
   let listProduct = data.map((item) => ({
-    image: `http://localhost:8080/${item.image}`,
+    image: `${Domain}/${item.image}`,
     name: `${item.produc_name}`,
     count: `${item.price}`,
     route: `http://localhost:3000/products/ProductDetail/${item.productId}`,
@@ -66,7 +68,7 @@ function dataOrient() {
   useEffect(() => {
     const fetchDataProduct = async () => {
       try {
-        const response = await GetProductByCategoryID("CT1");
+        const response = await GetProductByCategoryID("HL");
         console.log("response", response);
         if (response.status === 200) {
           setData(response.data.filter((pd) => pd.status === true));
@@ -80,7 +82,7 @@ function dataOrient() {
   }, []);
 
   let listProduct = data.map((item) => ({
-    image: `http://localhost:8080/${item.image}`,
+    image: `${Domain}/${item.image}`,
     name: `${item.produc_name}`,
     count: `${item.price}`,
     route: `http://localhost:3000/products/ProductDetail/${item.productId}`,
@@ -95,7 +97,7 @@ function dataOmega() {
   useEffect(() => {
     const fetchDataProduct = async () => {
       try {
-        const response = await GetProductByCategoryID("CT1");
+        const response = await GetProductByCategoryID("OM");
         if (response.status === 200) {
           setData(response.data.filter((pd) => pd.status === true));
         }
@@ -108,7 +110,7 @@ function dataOmega() {
   }, []);
 
   let listProduct = data.map((item) => ({
-    image: `http://localhost:8080/${item.image}`,
+    image: `${Domain}/${item.image}`,
     name: `${item.produc_name}`,
     count: `${item.price}`,
     route: `http://localhost:3000/products/ProductDetail/${item.productId}`,

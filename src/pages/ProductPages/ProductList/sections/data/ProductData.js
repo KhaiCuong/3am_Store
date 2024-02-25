@@ -1,3 +1,5 @@
+import { Domain } from "services/Domain";
+
 const { GetProductList } = require("services/ApiService");
 const { useState, useEffect } = require("react");
 
@@ -11,7 +13,7 @@ function ProductData(page, sort, fKey) {
         let listProduct = [];
         const response = await GetProductList();
         if (response.status === 200) {
-          const newResponse = response.data.filter((pd) => pd.status === true);
+          const newResponse = response.data.filter((pd) => pd.status === true && pd.type === 1);
           let listdata = [];
 
           // *** Resolve Sort and Search => create list product to display for the user to view
@@ -53,7 +55,7 @@ function ProductData(page, sort, fKey) {
             for (var j = 0; j < listdata.length; j++) {
               if (newResponse[j] != null) {
                 listProduct[j] = {
-                  image: `http://localhost:8080/${listdata[j].image}`,
+                  image: `${Domain}/${listdata[j].image}`,
                   name: `${listdata[j].produc_name}`,
                   count: `${listdata[j].price}`,
                   route: `http://localhost:3000/products/ProductDetail/${listdata[j].productId}`,
@@ -67,7 +69,7 @@ function ProductData(page, sort, fKey) {
             for (var i = 0 + count; i < 12 + count; i++) {
               if (newResponse[i] != null) {
                 listProduct[i] = {
-                  image: `http://localhost:8080/${listdata[i].image}`,
+                  image: `${Domain}/${listdata[i].image}`,
                   name: `${listdata[i].produc_name}`,
                   count: `${listdata[i].price}`,
                   route: `http://localhost:3000/products/ProductDetail/${listdata[i].productId}`,
@@ -110,7 +112,7 @@ function NumberOfPage() {
     fetchDataProduct();
   }, []);
 
-  return (count / 12).toFixed();
+  return Math.ceil((count / 12).toFixed());
 }
 
 export { NumberOfPage, ProductData };

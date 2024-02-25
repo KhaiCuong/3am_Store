@@ -7,6 +7,8 @@ import { useShoppingCart } from "context/ShoppingCartContext";
 import { CartItem } from "./CartItem";
 import { GetUserByID, PostOrder, PostOrderDetail, PutProductQuantity } from "services/ApiService";
 import Swal from "sweetalert2";
+import { PostPayment } from "services/ApiService";
+import { PutProductTotalBuy } from "services/ApiService";
 
 // eslint-disable-next-line react/prop-types
 const ShoppingCartModal = ({ isOpen }) => {
@@ -16,11 +18,8 @@ const ShoppingCartModal = ({ isOpen }) => {
   const usertoken = JSON.parse(localStorage.getItem("userToken"));
   // eslint-disable-next-line no-unused-vars
   const [user, setUser] = useState([]);
-
   const [select, setSelect] = useState("");
-
   const [errors, setErrors] = useState({});
-
   let [dataOrder, setDataOrder] = useState([]);
 
   // calculate total amount to be paid
@@ -64,6 +63,8 @@ const ShoppingCartModal = ({ isOpen }) => {
           totalPrice: total,
         });
         if (response.status === 201) {
+          let orderID = response.data.orderId;
+
           for (let i = 0; i < cartItems.length; i++) {
             const dataDetail = {
               produc_name: cartItems[i].product_name,
@@ -73,19 +74,33 @@ const ShoppingCartModal = ({ isOpen }) => {
               productId: cartItems[i].id,
               orderId: response.data.orderId,
             };
-            console.log("dataDetail", dataDetail);
             const detail = await PostOrderDetail(dataDetail);
 
             if (detail.status === 201) {
               PutProductQuantity(cartItems[i].id, cartItems[i].quantity);
+              PutProductTotalBuy(cartItems[i].id, cartItems[i].quantity);
             }
           }
           if (select === "2") {
             try {
-              closeCart();
-              navigate(`/checkout/${response.data.orderId}`);
+              console.log("response.data.orderId", orderID);
+              const dataPayment = {
+                orderId: orderID,
+                fullname: usertoken.fullname ? usertoken.fullname : "",
+                status: false,
+              };
+              const response = await PostPayment(dataPayment);
+              if (response.status === 201) {
+                closeCart();
+                localStorage.removeItem("shopping-cart");
+                navigate(`/checkout/${response.data.orderId}`);
+              }
             } catch (error) {
-              console.log("err", error);
+              Swal.fire({
+                title: "Payment faild",
+                text: "Please try again.",
+                icon: "error",
+              });
             }
           } else {
             Swal.fire({

@@ -8,8 +8,10 @@ import { Icon } from "@mui/material";
 import { GetOrdersByUserID } from "services/ApiService";
 import Swal from "sweetalert2";
 import { PutOrderStatus } from "services/ApiService";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import moment from "moment";
+import { GetPaymentList } from "services/ApiService";
+import { Domain } from "services/Domain";
 
 // import team1 from "assets/images/team-5.jpg";
 // import MKBox from "components/MKBox";
@@ -22,6 +24,11 @@ export default function UserOrder() {
   let [cancels, setCancels] = useState([]);
   let [reset, setReset] = useState(true);
   let [page, setPage] = useState(" Order ");
+  const [payment, setPayment] = useState([]);
+  const [paymentFailed, setPaymentFailed] = useState([]);
+  // const [shipCode, setShipCode] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrderList = async () => {
@@ -39,6 +46,25 @@ export default function UserOrder() {
 
           const filteredCanceled = response.data.filter((order) => order.status === "Canceled");
           setCancels(filteredCanceled);
+
+          const paymentRespone = await GetPaymentList();
+          if (paymentRespone.status === 200) {
+            let ListOrderPayment = [];
+            let ListOrderPaymentFailed = [];
+            let ListShipCode = [];
+
+            paymentRespone.data.forEach((pm) => {
+              if (pm.status === true) {
+                ListOrderPayment.push(pm.orderId);
+              } else if (pm.status === false) {
+                ListOrderPaymentFailed.push(pm.orderId);
+              } else {
+                ListShipCode.push(pm.orderId);
+              }
+            });
+            setPayment(ListOrderPayment);
+            setPaymentFailed(ListOrderPaymentFailed);
+          }
         }
       } catch (error) {
         console.log("error", error);
@@ -54,6 +80,22 @@ export default function UserOrder() {
     } else {
       setPage(value);
     }
+  };
+
+  const handlePayment = (orId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to Payment it?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        navigate(`/checkout/${orId}`);
+      }
+    });
   };
 
   const handleChangeStatus = (orderId, status) => {
@@ -80,6 +122,7 @@ export default function UserOrder() {
             }).then((result) => {
               if (result.isConfirmed) {
                 setReset(!reset);
+                window.location.reload();
               }
             });
           }
@@ -168,7 +211,8 @@ export default function UserOrder() {
                                 <img
                                   className="card-img-top"
                                   alt="Card image cap"
-                                  src={`http://localhost:8080/${item.image}`}
+                                  src={`${Domain}/${item.image}`}
+                                  style={{ height: "300px" }}
                                 />
                                 <div className="card-body pl-0 pr-0">
                                   <h5 className="card-title fontsize-small font-weight-bold">
@@ -181,7 +225,7 @@ export default function UserOrder() {
                                       Order date: {moment(item.createAt).format("DD/MM/YYYY")}
                                     </p>
                                   </div>
-                                  <div className="d-flex align-items-center justify-content-end">
+                                  <div className="d-flex align-items-center justify-content-between">
                                     {item.status === "Preparing" && (
                                       <h4 className="font-weight-bold" style={{ color: "orange" }}>
                                         Preparing
@@ -192,6 +236,32 @@ export default function UserOrder() {
                                         Delivery
                                       </h4>
                                     )}
+                                    <btn
+                                      className="btn btn-info mb-0"
+                                      hidden={!paymentFailed.includes(item.orderId)}
+                                      onClick={() => {
+                                        handlePayment(item.orderId);
+                                      }}
+                                    >
+                                      Payment Now
+                                    </btn>
+                                    <h4
+                                      className="font-weight-bold"
+                                      style={{ color: "Aqua" }}
+                                      hidden={!payment.includes(item.orderId)}
+                                    >
+                                      Paid
+                                    </h4>
+                                    <h4
+                                      className="font-weight-bold"
+                                      style={{ color: "silver" }}
+                                      hidden={
+                                        payment.includes(item.orderId) ||
+                                        paymentFailed.includes(item.orderId)
+                                      }
+                                    >
+                                      Ship COD
+                                    </h4>
                                   </div>
                                 </div>
                                 <div className="d-flex align-items-center justify-content-between">
@@ -199,8 +269,7 @@ export default function UserOrder() {
                                     to={"orderdetail/" + item.orderId}
                                     className="btn btn-primary"
                                   >
-                                    {" "}
-                                    Detail{" "}
+                                    Detail
                                   </Link>
                                   {item.status === "Preparing" && (
                                     <input
@@ -232,7 +301,8 @@ export default function UserOrder() {
                                 <img
                                   className="card-img-top"
                                   alt="Card image cap"
-                                  src={`http://localhost:8080/${item.image}`}
+                                  style={{ height: "300px" }}
+                                  src={`${Domain}/${item.image}`}
                                 />
                                 <div className="card-body  pl-0 pr-0">
                                   <h5 className="card-title fontsize-small font-weight-bold">
@@ -245,7 +315,7 @@ export default function UserOrder() {
                                       Order date: {moment(item.createAt).format("DD/MM/YYYY")}
                                     </p>
                                   </div>
-                                  <div className="d-flex align-items-center justify-content-end">
+                                  <div className="d-flex align-items-center justify-content-between">
                                     <h4 className="font-weight-bold" style={{ color: "red" }}>
                                       Canceled
                                     </h4>
@@ -279,7 +349,8 @@ export default function UserOrder() {
                                 <img
                                   className="card-img-top"
                                   alt="Card image cap"
-                                  src={`http://localhost:8080/${item.image}`}
+                                  style={{ height: "300px" }}
+                                  src={`${Domain}/${item.image}`}
                                 />
                                 <div className="card-body pl-0 pr-0">
                                   <h5 className="card-title fontsize-small font-weight-bold">
@@ -292,9 +363,26 @@ export default function UserOrder() {
                                       Order date: {moment(item.createAt).format("DD/MM/YYYY")}
                                     </p>
                                   </div>
-                                  <div className="d-flex align-items-center justify-content-end">
+                                  <div className="d-flex align-items-center justify-content-between">
                                     <h4 className="font-weight-bold" style={{ color: "green" }}>
                                       Completed
+                                    </h4>
+                                    <h4
+                                      className="font-weight-bold"
+                                      style={{ color: "Aqua" }}
+                                      hidden={!payment.includes(item.orderId)}
+                                    >
+                                      Paid
+                                    </h4>
+                                    <h4
+                                      className="font-weight-bold"
+                                      style={{ color: "silver" }}
+                                      hidden={
+                                        payment.includes(item.orderId) ||
+                                        paymentFailed.includes(item.orderId)
+                                      }
+                                    >
+                                      Ship COD
                                     </h4>
                                   </div>
                                 </div>

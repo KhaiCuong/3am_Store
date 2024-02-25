@@ -34,27 +34,27 @@ import { dataCasio, dataOmega, dataOrient, dataRolex } from "./data/dataProduct"
 function DesignBlocks() {
   const data = [
     {
-      title: "Casio",
+      title: "Calvin Klein",
       description:
-        "Casio tại Việt Nam gắn với hình ảnh những chiếc đồng hồ điện tử bền bỉ, chính xác, thách thức mọi điều kiện khắc nghiệt của môi trường.",
+        "In Vietnam, Calvin Klein is associated with the image of durable and accurate electronic watches, challenging all harsh environmental conditions.",
       items: dataCasio(),
     },
     {
       title: "Rolex",
       description:
-        " Đồng hồ Rolex có kiểu dáng tinh tế, sang trọng và được chế tác tỉ mỉ, mang lại sự đẳng cấp cho người dùng.",
+        "Rolex watches boast exquisite, luxurious designs meticulously crafted to bring prestige to the wearer.",
       items: dataRolex(),
     },
     {
-      title: "Orient",
+      title: "HubLot",
       description:
-        "Orient có xu hướng thiết kế đơn giản. Khác với các hãng đồng hồ Nhật khác, Orient trọng tâm phát triển dòng máy cơ Automatic bình dân. ",
+        "HubLot tends to favor simple designs. Unlike other Japanese watch brands, HubLot focuses on developing affordable Automatic mechanical movements.",
       items: dataOrient(),
     },
     {
       title: "Omega",
       description:
-        "Omega đã có 170 năm đi cùng với thăng trầm của lịch sử ngành công nghiệp chế tác đồng hồ. Hãng đánh dấu thương hiệu của mình với mẫu đồng hồ du hành vũ trụ lừng danh. ",
+        "For 170 years, Omega has been accompanying the ups and downs of the watchmaking industry's history. The brand has marked its identity with iconic space exploration timepieces.",
       items: dataOmega(),
     },
   ];

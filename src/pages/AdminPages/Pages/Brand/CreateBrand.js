@@ -7,6 +7,32 @@ import Swal from "sweetalert2";
 export default function CreateBrand() {
   const navigate = useNavigate();
   const [brand, setBrand] = useState([]);
+  const [errors, setErrors] = useState({});
+  // Validate data
+  const validateForm = (dataInput) => {
+    let errors = {};
+    if (!dataInput.categoryId) {
+      errors.categoryId = "Please enter your category Id";
+    } else if (dataInput.categoryId.length > 30) {
+      errors.categoryId = "category Id must be between 1 - 30 characters";
+    }
+
+    if (!dataInput.category_name) {
+      errors.category_name = "Please enter your Brand Name";
+    } else if (dataInput.category_name.length < 3 || dataInput.category_name.length > 30) {
+      errors.category_name = "Brand Name must be between 3 - 30 characters";
+    }
+    if (!dataInput.status) {
+      errors.status = "Please enter your status";
+    }
+
+    if (!dataInput.description) {
+      errors.description = "Please enter your description";
+    } else if (dataInput.description.length < 3 || dataInput.description.length > 300) {
+      errors.description = "Product Name must be between 3 - 300 characters";
+    }
+    return errors;
+  };
 
   const handleBack = () => {
     navigate("/admin/brands");
@@ -17,39 +43,57 @@ export default function CreateBrand() {
       ...brand,
       [name]: value,
     });
+    setErrors({
+      ...errors,
+      [name]: "",
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Create it!",
+
+    const newErrors = validateForm(brand);
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      Swal.fire({
+        icon: "error",
+        title: "Please Enter Information",
       });
+      return;
+    } else {
+      try {
+        const result = await Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Create it!",
+        });
 
-      if (result.isConfirmed) {
-        let data = {
-          ...brand,
-          status: brand.status === "true" ? true : false,
-        };
+        if (result.isConfirmed) {
+          let data = {
+            ...brand,
+            status: brand.status === "true" ? true : false,
+          };
 
-        const response = await PostBrand(data);
-        console.log("response", response);
+          const response = await PostBrand(data);
+          console.log("response", response);
 
-        if (response.status === 201) {
-          Swal.fire("Created!", "Your Brand has been Created.", "success");
-          // handle success or navigate to another page
-          navigate("/admin/brands");
+          if (response.status === 201) {
+            Swal.fire("Created!", "Your Brand has been Created.", "success");
+            // handle success or navigate to another page
+            navigate("/admin/brands");
+          }
         }
+      } catch (error) {
+        Swal.fire({
+          title: "Create faild",
+          text: error.response.data.message,
+          icon: "error",
+        });
       }
-    } catch (error) {
-      console.error("err", error);
-      // Handle the error, show a message, or perform other actions as needed
     }
   };
 
@@ -68,6 +112,12 @@ export default function CreateBrand() {
             name="categoryId"
             onChange={handleChangeInput}
           />
+          <span
+            className="text-danger h6"
+            hidden={errors.categoryId != null || errors.categoryId != "" ? false : true}
+          >
+            {errors.categoryId}
+          </span>
         </div>
         <div className="mb-3 mt-3">
           <label htmlFor="category_name" className="form-label w-100">
@@ -80,17 +130,28 @@ export default function CreateBrand() {
             name="category_name"
             onChange={handleChangeInput}
           />
+          <span
+            className="text-danger h6"
+            hidden={errors.category_name != null || errors.category_name != "" ? false : true}
+          >
+            {errors.category_name}
+          </span>
         </div>
         <div className="mb-3 mt-3">
           <label htmlFor="status" className="form-label w-100">
             Status:
           </label>
           <select id="status" className="form-control" name="status" onChange={handleChangeInput}>
-            <option value="true" selected>
-              True
-            </option>
+            <option value=""> --- Select status --- </option>
+            <option value="true">True</option>
             <option value="false">False</option>
           </select>
+          <span
+            className="text-danger h6"
+            hidden={errors.status != null || errors.status != "" ? false : true}
+          >
+            {errors.status}
+          </span>
         </div>
 
         <div className="mb-3 mt-3">
@@ -104,6 +165,12 @@ export default function CreateBrand() {
             name="description"
             onChange={handleChangeInput}
           />
+          <span
+            className="text-danger h6"
+            hidden={errors.description != null || errors.description != "" ? false : true}
+          >
+            {errors.description}
+          </span>
         </div>
 
         <div className="d-flex justify-content-around align-items-center mt-4">

@@ -174,10 +174,15 @@ img {
   font-family: "Roboto Slab", sans-serif;
 }
 
+.totalBuy {
+  color: #344767;
+  font-family: "Roboto Slab", sans-serif;
+}
+
 .product-description {
   height: 30%;
   font-size: 1rem;
-  color: #7b809a;
+  color: #7b809a; 
 }
 
 .product-title {
@@ -316,8 +321,6 @@ img {
   margin-top: 10px;
   margin-bottom: 30px;
   font-size: small;
-
-
 }
 .small {
   font-size: medium;
@@ -325,7 +328,7 @@ img {
 .my-hr {
   margin-left: auto;
   margin-right: auto;
-  width:95%
+  width: 95%;
 }
 
 .img-ml {

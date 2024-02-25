@@ -89,7 +89,7 @@ function SignInBasic() {
             navigate(`/products/ProductDetail/${previousPageUrl}`);
             localStorage.removeItem("previousPage");
           } else {
-            goBack();
+            navigate("/home");
           }
         }
       }
@@ -112,7 +112,7 @@ function SignInBasic() {
         autocapitalize: "off",
       },
       showCancelButton: true,
-      confirmButtonText: "Look up",
+      confirmButtonText: "Send mail",
       showLoaderOnConfirm: true,
       preConfirm: async (email) => {
         try {

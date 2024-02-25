@@ -36,6 +36,8 @@ import PayPalCheckout from "components/Paypal/PayPalCheckout";
 import ResetPassword from "pages/LandingPages/ResetPassword";
 import NotFound from "pages/PageNotFound";
 import OrderManager from "pages/AdminPages/Pages/Order/OrderManager";
+import UpdateOrder from "pages/AdminPages/Pages/Order/UpdateOrder";
+import ReviewManager from "pages/AdminPages/Pages/Review/ReviewManager";
 
 export default function App() {
   const { pathname } = useLocation();
@@ -100,13 +102,13 @@ export default function App() {
           </Route>
           <Route path="orders">
             <Route index element={<OrderManager />} />
-            <Route path="update/:id" element={<UpdateBrand />} />
-            <Route path="create" element={<CreateBrand />} />
+            <Route path="update/:id" element={<UpdateOrder />} />
           </Route>
           <Route path="accounts">
             <Route index element={<AccountManager />} />
             <Route path="create" element={<CreateAccount />} />
           </Route>
+          <Route path="reviews" element={<ReviewManager />} />
         </Route>
         {/* {getRoutes(routes)} */}
         <Route path="*" element={<Navigate to="/home" />} />
